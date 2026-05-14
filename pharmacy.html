@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pharmacy — MediCore HMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--card:#181c27;--card2:#1e2333;--border:#2a2f42;
+  --blue:#4b8ef1;--blue-dk:#2563d4;--blue-lt:rgba(75,142,241,.12);
+  --green:#34c97a;--green-lt:rgba(52,201,122,.12);
+  --amber:#f5a623;--amber-lt:rgba(245,166,35,.12);
+  --red:#f05252;--red-lt:rgba(240,82,82,.12);
+  --purple:#a78bfa;--purple-lt:rgba(167,139,250,.12);
+  --text:#e8eaf2;--muted:#7c82a0;--hint:#4a4f67;
+  --font:'Mulish',sans-serif;--display:'Syne',sans-serif;
+  --r:8px;--r-lg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{width:220px;min-width:220px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-ic{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-ic i{color:#fff;font-size:18px;}
+.logo h1{font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);}
+.logo p{font-size:11px;color:var(--muted);}
+.nav{padding:12px 8px;flex:1;}
+.nl{font-size:10px;font-weight:700;color:var(--hint);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin:12px 0 4px;font-family:var(--display);}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:12px;color:var(--muted);margin-bottom:2px;transition:all .15s;}
+.ni:hover{background:var(--card2);color:var(--text);}
+.ni.act{background:var(--blue-lt);color:var(--blue);font-weight:600;}
+.ni i{font-size:16px;width:18px;}
+.ni .bx{margin-left:auto;font-size:10px;background:var(--red);color:#fff;padding:1px 6px;border-radius:8px;}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.topbar h2{font-family:var(--display);font-size:17px;font-weight:700;flex:1;color:var(--text);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;font-weight:600;}
+.btn:hover{border-color:var(--blue);color:var(--blue);}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn.primary:hover{background:var(--blue-dk);}
+.btn.warn{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,166,35,.3);}
+.btn.danger{background:var(--red-lt);color:var(--red);border-color:rgba(240,82,82,.3);}
+.btn.success{background:var(--green-lt);color:var(--green);border-color:rgba(52,201,122,.3);}
+
+.content{padding:24px;flex:1;}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-radius:50%;filter:blur(30px);opacity:.3;}
+.sc.blue::before{background:var(--blue);}
+.sc.green::before{background:var(--green);}
+.sc.amber::before{background:var(--amber);}
+.sc.red::before{background:var(--red);}
+.sc .ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.sc .lb{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.sc .vl{font-family:var(--display);font-size:26px;font-weight:700;line-height:1;color:var(--text);}
+.sc .dl{font-size:11px;margin-top:5px;color:var(--muted);}
+.dl.up{color:var(--green);}
+.dl.dn{color:var(--red);}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);padding:3px;border-radius:var(--r);margin-bottom:22px;width:fit-content;}
+.tab{padding:7px 16px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;color:var(--muted);transition:all .15s;font-family:var(--display);}
+.tab.on{background:var(--blue);color:#fff;}
+
+.section{display:none;}
+.section.on{display:block;}
+
+/* Table */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:700;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);text-transform:uppercase;letter-spacing:.08em;font-family:var(--display);}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--card2);}
+.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:.03em;}
+.pg{background:var(--green-lt);color:var(--green);}
+.pa{background:var(--amber-lt);color:var(--amber);}
+.pb{background:var(--blue-lt);color:var(--blue);}
+.pr{background:var(--red-lt);color:var(--red);}
+.pp{background:var(--purple-lt);color:var(--purple);}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.srch{display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);flex:1;}
+.srch i{color:var(--hint);font-size:15px;}
+.srch input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);padding:9px 0;width:100%;font-family:var(--font);}
+select.filter{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:var(--font);}
+
+/* Stock level bar */
+.stock-bar-wrap{width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px;}
+.stock-bar{height:100%;border-radius:3px;transition:width .3s;}
+
+/* Form */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;}
+.form-card h3{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--text);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.fg input,.fg select,.fg textarea{font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);}
+.fg textarea{resize:vertical;min-height:70px;}
+.action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+
+/* Alert banner */
+.alert-banner{background:var(--amber-lt);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--amber);}
+.alert-banner i{font-size:18px;}
+
+/* Prescription card */
+.rx-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:10px;}
+.rx-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.rx-id{font-family:var(--display);font-size:12px;font-weight:700;color:var(--blue);}
+.rx-patient{font-size:13px;font-weight:600;color:var(--text);}
+.rx-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.rx-drugs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.rx-drug{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
+      <div><h1>MediCore HMS</h1><p>Pharmacy</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nl">Overview</div>
+      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
+      <div class="nl">Departments</div>
+      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
+      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
+      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
+      <a class="ni act" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy <span class="bx">3</span></a>
+      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
+      <div class="nl">Finance</div>
+      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
+      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
+      <div class="nl" >System</div>
+      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Pharmacy</h2>
+      <button class="btn warn" onclick="switchTab('lowstock')"><i class="ti ti-alert-triangle"></i> Low Stock (3)</button>
+      <button class="btn" onclick="switchTab('prescriptions')"><i class="ti ti-file-text"></i> Prescriptions</button>
+      <button class="btn primary" onclick="switchTab('add')"><i class="ti ti-plus"></i> Add Medicine</button>
+    </div>
+
+    <div class="content">
+      <div class="alert-banner">
+        <i class="ti ti-alert-triangle"></i>
+        <strong>3 medicines</strong> are below reorder level: Paracetamol 500mg, Amoxicillin 250mg, Metformin 850mg. Please reorder immediately.
+      </div>
+
+      <div class="stats">
+        <div class="sc blue"><div class="ic" style="background:var(--blue-lt)"><i class="ti ti-pill" style="color:var(--blue);font-size:16px"></i></div><div class="lb">Total medicines</div><div class="vl">324</div><div class="dl">Items in inventory</div></div>
+        <div class="sc green"><div class="ic" style="background:var(--green-lt)"><i class="ti ti-file-text" style="color:var(--green);font-size:16px"></i></div><div class="lb">Prescriptions today</div><div class="vl">87</div><div class="dl up">↑ 14 vs yesterday</div></div>
+        <div class="sc amber"><div class="ic" style="background:var(--amber-lt)"><i class="ti ti-alert-circle" style="color:var(--amber);font-size:16px"></i></div><div class="lb">Low stock items</div><div class="vl">3</div><div class="dl dn">Needs reorder</div></div>
+        <div class="sc red"><div class="ic" style="background:var(--red-lt)"><i class="ti ti-calendar-x" style="color:var(--red);font-size:16px"></i></div><div class="lb">Expiring soon</div><div class="vl">11</div><div class="dl">Within 30 days</div></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" id="tab-inventory" onclick="switchTab('inventory')">Inventory</div>
+        <div class="tab" id="tab-prescriptions" onclick="switchTab('prescriptions')">Prescriptions</div>
+        <div class="tab" id="tab-dispensing" onclick="switchTab('dispensing')">Dispensing log</div>
+        <div class="tab" id="tab-lowstock" onclick="switchTab('lowstock')">Low stock</div>
+        <div class="tab" id="tab-add" onclick="switchTab('add')">Add medicine</div>
+      </div>
+
+      <!-- INVENTORY -->
+      <div class="section on" id="sec-inventory">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search medicine name, category..." id="invSearch" oninput="filterInventory()"></div>
+          <select class="filter" id="catFilter" onchange="filterInventory()">
+            <option value="">All categories</option>
+            <option>Analgesic</option><option>Antibiotic</option><option>Antidiabetic</option>
+            <option>Antihypertensive</option><option>Antihistamine</option><option>Cardiovascular</option>
+            <option>Vitamin / Supplement</option><option>Anaesthetic</option>
+          </select>
+          <select class="filter" id="stockFilter" onchange="filterInventory()">
+            <option value="">All stock levels</option>
+            <option>In Stock</option><option>Low Stock</option><option>Out of Stock</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Medicine</th><th>Category</th><th>Dosage</th><th>Stock (units)</th><th>Stock level</th><th>Reorder at</th><th>Expiry</th><th>Unit price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="invTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRESCRIPTIONS -->
+      <div class="section" id="sec-prescriptions">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search patient, doctor, prescription ID..."></div>
+          <select class="filter"><option value="">All statuses</option><option>Pending</option><option>Dispensed</option><option>Partially dispensed</option><option>Cancelled</option></select>
+        </div>
+        <div id="rxList"></div>
+      </div>
+
+      <!-- DISPENSING LOG -->
+      <div class="section" id="sec-dispensing">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search dispensing records..."></div>
+          <input type="date" value="2026-05-07" style="font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:var(--font);">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Ref #</th><th>Patient</th><th>Medicine</th><th>Qty</th><th>Dispensed by</th><th>Doctor</th><th>Time</th><th>Status</th></tr></thead>
+            <tbody id="dispTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LOW STOCK -->
+      <div class="section" id="sec-lowstock">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Medicine</th><th>Category</th><th>Current stock</th><th>Reorder level</th><th>Deficit</th><th>Supplier</th><th>Last ordered</th><th>Action</th></tr></thead>
+            <tbody id="lowTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADD MEDICINE -->
+      <div class="section" id="sec-add">
+        <div class="form-card">
+          <h3><i class="ti ti-pill" style="margin-right:8px;color:var(--blue)"></i>Medicine details</h3>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Medicine name *</label><input type="text" placeholder="e.g. Paracetamol"></div>
+            <div class="fg"><label>Generic name</label><input type="text" placeholder="e.g. Acetaminophen"></div>
+            <div class="fg"><label>Category *</label><select><option>Select category</option><option>Analgesic</option><option>Antibiotic</option><option>Antidiabetic</option><option>Antihypertensive</option><option>Antihistamine</option><option>Cardiovascular</option><option>Vitamin / Supplement</option><option>Anaesthetic</option></select></div>
+            <div class="fg"><label>Dosage form *</label><select><option>Tablet</option><option>Capsule</option><option>Syrup</option><option>Injection</option><option>Cream / Ointment</option><option>Inhaler</option><option>Drops</option><option>Suppository</option></select></div>
+            <div class="fg"><label>Strength / Dosage *</label><input type="text" placeholder="e.g. 500mg, 250ml"></div>
+            <div class="fg"><label>Manufacturer</label><input type="text" placeholder="Manufacturer name"></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3><i class="ti ti-box" style="margin-right:8px;color:var(--blue)"></i>Stock & pricing</h3>
+          <div class="form-grid three">
+            <div class="fg"><label>Opening stock (units) *</label><input type="number" placeholder="0"></div>
+            <div class="fg"><label>Reorder level *</label><input type="number" placeholder="e.g. 50"></div>
+            <div class="fg"><label>Maximum stock</label><input type="number" placeholder="e.g. 500"></div>
+            <div class="fg"><label>Unit purchase price (€) *</label><input type="number" placeholder="0.00" step="0.01"></div>
+            <div class="fg"><label>Unit selling price (€) *</label><input type="number" placeholder="0.00" step="0.01"></div>
+            <div class="fg"><label>Batch number</label><input type="text" placeholder="e.g. BT-20260312"></div>
+            <div class="fg"><label>Manufacture date</label><input type="date"></div>
+            <div class="fg"><label>Expiry date *</label><input type="date"></div>
+            <div class="fg"><label>Storage conditions</label><select><option>Room temperature</option><option>Refrigerated (2–8°C)</option><option>Frozen</option><option>Cool & dry</option></select></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3><i class="ti ti-truck" style="margin-right:8px;color:var(--blue)"></i>Supplier information</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Supplier name</label><input type="text" placeholder="Supplier / distributor name"></div>
+            <div class="fg"><label>Supplier contact</label><input type="text" placeholder="Phone or email"></div>
+            <div class="fg" style="grid-column:span 2"><label>Notes</label><textarea placeholder="Any additional notes about this medicine..."></textarea></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn" onclick="switchTab('inventory')">Cancel</button>
+          <button class="btn primary" onclick="alert('Medicine added to inventory successfully!')"><i class="ti ti-check"></i> Add to inventory</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const inventory = [
+  {name:'Paracetamol',dosage:'500mg',category:'Analgesic',stock:32,reorder:100,expiry:'Mar 2027',price:0.15,status:'Low Stock'},
+  {name:'Amoxicillin',dosage:'250mg',category:'Antibiotic',stock:18,reorder:80,expiry:'Jan 2027',price:0.45,status:'Low Stock'},
+  {name:'Metformin',dosage:'850mg',category:'Antidiabetic',stock:25,reorder:60,expiry:'Nov 2026',price:0.30,status:'Low Stock'},
+  {name:'Lisinopril',dosage:'10mg',category:'Antihypertensive',stock:340,reorder:50,expiry:'Aug 2027',price:0.22,status:'In Stock'},
+  {name:'Atorvastatin',dosage:'20mg',category:'Cardiovascular',stock:210,reorder:40,expiry:'Jun 2027',price:0.55,status:'In Stock'},
+  {name:'Omeprazole',dosage:'20mg',category:'Analgesic',stock:185,reorder:60,expiry:'Apr 2027',price:0.40,status:'In Stock'},
+  {name:'Cetirizine',dosage:'10mg',category:'Antihistamine',stock:0,reorder:50,expiry:'May 2027',price:0.18,status:'Out of Stock'},
+  {name:'Aspirin',dosage:'75mg',category:'Cardiovascular',stock:420,reorder:100,expiry:'Dec 2027',price:0.10,status:'In Stock'},
+  {name:'Vitamin D3',dosage:'1000IU',category:'Vitamin / Supplement',stock:290,reorder:80,expiry:'Oct 2027',price:0.25,status:'In Stock'},
+  {name:'Morphine Sulfate',dosage:'10mg/ml',category:'Anaesthetic',stock:55,reorder:20,expiry:'Sep 2026',price:4.80,status:'In Stock'},
+];
+
+const prescriptions = [
+  {id:'#RX-4401',patient:'Amira Khalil',doctor:'Dr. Mensah',date:'07 May 2026',drugs:['Lisinopril 10mg x30','Atorvastatin 20mg x30'],status:'Pending'},
+  {id:'#RX-4400',patient:'Chen Wei',doctor:'Dr. Mensah',date:'07 May 2026',drugs:['Aspirin 75mg x60','Omeprazole 20mg x14'],status:'Dispensed'},
+  {id:'#RX-4399',patient:'Tom Hargreaves',doctor:'Dr. Nair',date:'06 May 2026',drugs:['Paracetamol 500mg x20','Vitamin D3 1000IU x30'],status:'Dispensed'},
+  {id:'#RX-4398',patient:'Omar Balogun',doctor:'Dr. Pham',date:'06 May 2026',drugs:['Metformin 850mg x60','Amoxicillin 250mg x14'],status:'Partially dispensed'},
+  {id:'#RX-4397',patient:'Elena Petrov',doctor:'Dr. Adeyemi',date:'05 May 2026',drugs:['Cetirizine 10mg x30'],status:'Cancelled'},
+];
+
+const dispensing = [
+  {ref:'#D-8801',patient:'Chen Wei',medicine:'Aspirin 75mg',qty:60,by:'Pharm. Nwosu',doctor:'Dr. Mensah',time:'09:15',status:'Completed'},
+  {ref:'#D-8800',patient:'Tom Hargreaves',medicine:'Paracetamol 500mg',qty:20,by:'Pharm. Nwosu',doctor:'Dr. Nair',time:'10:40',status:'Completed'},
+  {ref:'#D-8799',patient:'Omar Balogun',medicine:'Metformin 850mg',qty:60,by:'Pharm. Adaeze',doctor:'Dr. Pham',time:'11:05',status:'Completed'},
+  {ref:'#D-8798',patient:'Amira Khalil',medicine:'Lisinopril 10mg',qty:30,by:'Pharm. Adaeze',doctor:'Dr. Mensah',time:'13:20',status:'Pending'},
+  {ref:'#D-8797',patient:'Lucia Santos',medicine:'Vitamin D3 1000IU',qty:30,by:'Pharm. Nwosu',doctor:'Dr. Kowalski',time:'14:00',status:'Completed'},
+];
+
+const lowStock = [
+  {name:'Paracetamol 500mg',category:'Analgesic',stock:32,reorder:100,deficit:68,supplier:'PharmaDist NL',lastOrdered:'20 Apr 2026'},
+  {name:'Amoxicillin 250mg',category:'Antibiotic',stock:18,reorder:80,deficit:62,supplier:'MediSupply EU',lastOrdered:'15 Apr 2026'},
+  {name:'Metformin 850mg',category:'Antidiabetic',stock:25,reorder:60,deficit:35,supplier:'PharmaDist NL',lastOrdered:'18 Apr 2026'},
+];
+
+function stockColor(s){return {Low:var_='#f5a623',In:'#34c97a',Out:'#f05252'}[s.split(' ')[0]]||'#7c82a0';}
+function stockPct(stock,reorder){return Math.min(100,Math.round(stock/Math.max(reorder*2,stock)*100));}
+function statusPill(s){const m={'In Stock':'pg','Low Stock':'pa','Out of Stock':'pr','Pending':'pa','Dispensed':'pg','Completed':'pg','Partially dispensed':'pb','Cancelled':'pr'};return `<span class="pill ${m[s]||'pb'}">${s}</span>`;}
+
+function renderInventory(data){
+  document.getElementById('invTable').innerHTML=data.map(m=>{
+    const pct=stockPct(m.stock,m.reorder);
+    const color=m.status==='In Stock'?'var(--green)':m.status==='Low Stock'?'var(--amber)':'var(--red)';
+    return `<tr>
+      <td><strong>${m.name}</strong></td><td><span style="font-size:11px;color:var(--muted)">${m.category}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${m.dosage}</td>
+      <td style="font-family:'Syne',sans-serif;font-weight:700;color:${color}">${m.stock}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="stock-bar-wrap"><div class="stock-bar" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;color:var(--muted)">${pct}%</span></div></td>
+      <td style="font-size:12px;color:var(--muted)">${m.reorder}</td>
+      <td style="font-size:12px;color:var(--muted)">${m.expiry}</td>
+      <td style="font-size:12px">€${m.price.toFixed(2)}</td>
+      <td>${statusPill(m.status)}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn" style="padding:4px 8px;font-size:11px"><i class="ti ti-edit"></i></button>
+        <button class="btn warn" style="padding:4px 8px;font-size:11px"><i class="ti ti-truck"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterInventory(){
+  const q=document.getElementById('invSearch').value.toLowerCase();
+  const cat=document.getElementById('catFilter').value;
+  const st=document.getElementById('stockFilter').value;
+  renderInventory(inventory.filter(m=>
+    (!q||m.name.toLowerCase().includes(q)||m.category.toLowerCase().includes(q))&&
+    (!cat||m.category===cat)&&(!st||m.status===st)
+  ));
+}
+
+function renderRx(){
+  document.getElementById('rxList').innerHTML=prescriptions.map(rx=>`
+    <div class="rx-card">
+      <div class="rx-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px">
+            <span class="rx-id">${rx.id}</span>${statusPill(rx.status)}
+          </div>
+          <div class="rx-patient">${rx.patient}</div>
+          <div class="rx-meta">${rx.doctor} · ${rx.date}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          ${rx.status==='Pending'?`<button class="btn success" style="font-size:11px;padding:6px 12px"><i class="ti ti-pill"></i> Dispense</button>`:''}
+          <button class="btn" style="font-size:11px;padding:6px 12px"><i class="ti ti-eye"></i> View</button>
+        </div>
+      </div>
+      <div class="rx-drugs">${rx.drugs.map(d=>`<span class="rx-drug"><i class="ti ti-pill" style="font-size:11px;margin-right:4px;color:var(--blue)"></i>${d}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function renderDispensing(){
+  document.getElementById('dispTable').innerHTML=dispensing.map(d=>`
+    <tr>
+      <td style="font-size:11px;color:var(--muted)">${d.ref}</td>
+      <td>${d.patient}</td>
+      <td><strong>${d.medicine}</strong></td>
+      <td style="font-weight:700;color:var(--blue)">${d.qty}</td>
+      <td style="font-size:12px;color:var(--muted)">${d.by}</td>
+      <td style="font-size:12px;color:var(--muted)">${d.doctor}</td>
+      <td style="font-size:12px;font-family:'Syne',sans-serif">${d.time}</td>
+      <td>${statusPill(d.status)}</td>
+    </tr>`).join('');
+}
+
+function renderLowStock(){
+  document.getElementById('lowTable').innerHTML=lowStock.map(m=>`
+    <tr>
+      <td><strong style="color:var(--amber)">${m.name}</strong></td>
+      <td><span style="font-size:11px;color:var(--muted)">${m.category}</span></td>
+      <td style="font-weight:700;color:var(--red)">${m.stock}</td>
+      <td style="color:var(--muted)">${m.reorder}</td>
+      <td style="font-weight:700;color:var(--amber)">-${m.deficit}</td>
+      <td style="font-size:12px;color:var(--muted)">${m.supplier}</td>
+      <td style="font-size:12px;color:var(--muted)">${m.lastOrdered}</td>
+      <td><button class="btn warn" style="font-size:11px;padding:6px 12px"><i class="ti ti-truck"></i> Reorder</button></td>
+    </tr>`).join('');
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(e=>e.classList.remove('on'));
+  const tab=document.getElementById('tab-'+t),sec=document.getElementById('sec-'+t);
+  if(tab)tab.classList.add('on');if(sec)sec.classList.add('on');
+}
+
+renderInventory(inventory);renderRx();renderDispensing();renderLowStock();
+</script>
+</body>
+</html>

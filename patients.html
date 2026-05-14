@@ -1,0 +1,405 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.wrap{display:flex;height:100vh;min-height:700px;background:var(--color-background-tertiary);font-family:var(--font-sans);}
+.sidebar{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:0;}
+.logo{padding:16px 14px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:10px;}
+.logo-ic{width:28px;height:28px;background:#185FA5;border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logo-ic i{color:#fff;font-size:15px;}
+.logo-text{font-size:12px;font-weight:500;color:var(--color-text-primary);}
+.nav{padding:10px 6px;}
+.nl{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.08em;text-transform:uppercase;padding:0 8px;margin:10px 0 4px;}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--border-radius-md);cursor:pointer;font-size:12px;color:var(--color-text-secondary);margin-bottom:1px;}
+.ni:hover{background:var(--color-background-secondary);color:var(--color-text-primary);}
+.ni.act{background:#E6F1FB;color:#185FA5;font-weight:500;}
+.ni i{font-size:15px;width:16px;}
+.ni .bx{margin-left:auto;font-size:10px;background:#E24B4A;color:#fff;padding:1px 5px;border-radius:8px;}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:10px 20px;display:flex;align-items:center;gap:12px;}
+.topbar h2{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1;}
+.tbtn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);padding:5px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:transparent;}
+.tbtn:hover{background:var(--color-background-secondary);}
+.tbtn.primary{background:#185FA5;color:#fff;border-color:#185FA5;}
+.tbtn.primary:hover{background:#0C447C;}
+.content{padding:18px 20px;flex:1;}
+.tabs{display:flex;gap:2px;background:var(--color-background-secondary);padding:3px;border-radius:var(--border-radius-md);margin-bottom:18px;width:fit-content;}
+.tab{padding:6px 14px;font-size:12px;border-radius:6px;cursor:pointer;color:var(--color-text-secondary);}
+.tab.on{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;border:0.5px solid var(--color-border-tertiary);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.sc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px;}
+.sc .ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.sc .lb{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px;}
+.sc .vl{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.sc .dl{font-size:10px;margin-top:3px;}
+.dl.up{color:#3B6D11;} .dl.nt{color:var(--color-text-secondary);}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.srch{display:flex;align-items:center;gap:8px;padding:0 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);flex:1;}
+.srch i{color:var(--color-text-tertiary);font-size:14px;}
+.srch input{border:none;outline:none;background:transparent;font-size:12px;color:var(--color-text-primary);padding:7px 0;width:100%;}
+select{font-size:12px;padding:6px 8px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);}
+.tbl-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;}
+th{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-align:left;padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);}
+td{padding:9px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--color-background-secondary);cursor:pointer;}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;}
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;display:inline-block;}
+.pg{background:#EAF3DE;color:#3B6D11;} .pa{background:#FAEEDA;color:#633806;}
+.pb{background:#E6F1FB;color:#185FA5;} .pr{background:#FCEBEB;color:#A32D2D;}
+.pp{background:#EEEDFE;color:#3C3489;}
+.section{display:none;}
+.section.on{display:block;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-size:11px;font-weight:500;color:var(--color-text-secondary);}
+.fg input,.fg select,.fg textarea{font-size:12px;padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);outline:none;width:100%;}
+.fg textarea{resize:vertical;min-height:60px;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#185FA5;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:14px;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.card-hd h3{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.sec-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;margin-top:4px;}
+.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.profile-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.info-row{display:flex;flex-direction:column;gap:2px;}
+.info-row .k{font-size:11px;color:var(--color-text-secondary);}
+.info-row .v{font-size:12px;color:var(--color-text-primary);font-weight:500;}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.tl-item:last-child{border-bottom:none;}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tl-date{font-size:11px;color:var(--color-text-secondary);min-width:72px;}
+.tl-title{font-size:12px;font-weight:500;color:var(--color-text-primary);}
+.tl-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.admit-steps{display:flex;align-items:center;gap:0;margin-bottom:20px;}
+.step{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-secondary);}
+.step.done{color:#3B6D11;} .step.cur{color:#185FA5;font-weight:500;background:#E6F1FB;}
+.step-num{width:20px;height:20px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;}
+.step.done .step-num{background:#EAF3DE;border-color:#3B6D11;}
+.step-arrow{color:var(--color-text-tertiary);font-size:12px;margin:0 2px;}
+.action-row{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn{padding:7px 16px;font-size:12px;border-radius:var(--border-radius-md);cursor:pointer;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);}
+.btn:hover{background:var(--color-background-secondary);}
+.btn.prim{background:#185FA5;color:#fff;border-color:#185FA5;}
+.btn.prim:hover{background:#0C447C;}
+.btn.grn{background:#EAF3DE;color:#3B6D11;border-color:#97C459;}
+.btn.red{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.vitals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.vital{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;text-align:center;}
+.vital .vk{font-size:10px;color:var(--color-text-secondary);margin-bottom:4px;}
+.vital .vv{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.vital .vu{font-size:10px;color:var(--color-text-tertiary);}
+</style>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital" aria-hidden="true"></i></div>
+      <span class="logo-text">MediCore HMS</span>
+    </div>
+    <div class="nav">
+      <div class="nl">Overview</div>
+      <div class="ni" onclick="sendPrompt('Go back to the main hospital dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+      <div class="ni act"><i class="ti ti-users" aria-hidden="true"></i> Patients <span class="bx">12</span></div>
+      <div class="nl">Departments</div>
+      <div class="ni" onclick="sendPrompt('Open the Appointments module')"><i class="ti ti-calendar" aria-hidden="true"></i> Appointments</div>
+      <div class="ni" onclick="sendPrompt('Open Doctors & Staff module')"><i class="ti ti-stethoscope" aria-hidden="true"></i> Doctors & Staff</div>
+      <div class="ni" onclick="sendPrompt('Open Wards & Beds module')"><i class="ti ti-bed" aria-hidden="true"></i> Wards & Beds</div>
+      <div class="ni" onclick="sendPrompt('Open Pharmacy module')"><i class="ti ti-pill" aria-hidden="true"></i> Pharmacy</div>
+      <div class="ni" onclick="sendPrompt('Open Laboratory module')"><i class="ti ti-microscope" aria-hidden="true"></i> Laboratory</div>
+      <div class="nl">Finance</div>
+      <div class="ni" onclick="sendPrompt('Open Billing module')"><i class="ti ti-receipt" aria-hidden="true"></i> Billing</div>
+      <div class="ni" onclick="sendPrompt('Open Reports module')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Reports</div>
+      <div class="nl" >System</div>
+      <div class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Patients</h2>
+      <button class="tbtn" onclick="showSection('records')"><i class="ti ti-list" aria-hidden="true"></i> All Records</button>
+      <button class="tbtn primary" onclick="showSection('register')"><i class="ti ti-plus" aria-hidden="true"></i> New Patient</button>
+    </div>
+
+    <div class="content">
+      <div class="tabs">
+        <div class="tab on" id="tab-records" onclick="switchTab('records')">Patient records</div>
+        <div class="tab" id="tab-register" onclick="switchTab('register')">Register patient</div>
+        <div class="tab" id="tab-profile" onclick="switchTab('profile')">Patient profile</div>
+        <div class="tab" id="tab-admit" onclick="switchTab('admit')">Admit / Discharge</div>
+      </div>
+
+      <div class="section on" id="sec-records">
+        <div class="stats">
+          <div class="sc"><div class="ic" style="background:#E6F1FB;"><i class="ti ti-users" style="color:#185FA5;font-size:14px;" aria-hidden="true"></i></div><div class="lb">Total patients</div><div class="vl">4,821</div><div class="dl up"><i class="ti ti-arrow-up" style="font-size:9px;" aria-hidden="true"></i> 34 this week</div></div>
+          <div class="sc"><div class="ic" style="background:#EAF3DE;"><i class="ti ti-user-check" style="color:#3B6D11;font-size:14px;" aria-hidden="true"></i></div><div class="lb">Currently admitted</div><div class="vl">187</div><div class="dl up"><i class="ti ti-arrow-up" style="font-size:9px;" aria-hidden="true"></i> 78% occupancy</div></div>
+          <div class="sc"><div class="ic" style="background:#FAEEDA;"><i class="ti ti-clock" style="color:#854F0B;font-size:14px;" aria-hidden="true"></i></div><div class="lb">Outpatients today</div><div class="vl">97</div><div class="dl nt">63 appointments</div></div>
+          <div class="sc"><div class="ic" style="background:#FCEBEB;"><i class="ti ti-alert-circle" style="color:#A32D2D;font-size:14px;" aria-hidden="true"></i></div><div class="lb">New registrations</div><div class="vl">12</div><div class="dl up"><i class="ti ti-arrow-up" style="font-size:9px;" aria-hidden="true"></i> today</div></div>
+        </div>
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search" aria-hidden="true"></i><input type="text" placeholder="Search by name, ID, phone..." id="searchInput" oninput="filterPatients()"></div>
+          <select onchange="filterPatients()" id="deptFilter">
+            <option value="">All departments</option>
+            <option>Cardiology</option><option>General Medicine</option><option>Orthopaedics</option>
+            <option>Maternity</option><option>Paediatrics</option><option>ICU</option><option>Neurology</option>
+          </select>
+          <select onchange="filterPatients()" id="statusFilter">
+            <option value="">All statuses</option>
+            <option>Admitted</option><option>Outpatient</option><option>Discharged</option><option>Critical</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:90px;">Patient ID</th>
+              <th style="width:140px;">Name</th>
+              <th style="width:40px;">Age</th>
+              <th style="width:80px;">Gender</th>
+              <th style="width:120px;">Department</th>
+              <th style="width:120px;">Doctor</th>
+              <th style="width:90px;">Admitted</th>
+              <th style="width:90px;">Status</th>
+              <th style="width:70px;">Actions</th>
+            </tr></thead>
+            <tbody id="patientTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section" id="sec-register">
+        <div class="card">
+          <div class="card-hd"><h3><i class="ti ti-user-plus" style="margin-right:6px;font-size:14px;" aria-hidden="true"></i>Personal information</h3></div>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>First name *</label><input type="text" placeholder="e.g. Amira"></div>
+            <div class="fg"><label>Last name *</label><input type="text" placeholder="e.g. Khalil"></div>
+            <div class="fg"><label>Date of birth *</label><input type="date"></div>
+            <div class="fg"><label>Gender *</label><select><option>Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="fg"><label>National ID / Passport</label><input type="text" placeholder="ID number"></div>
+            <div class="fg"><label>Blood group</label><select><option>Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+          </div>
+          <div class="sec-label">Contact details</div>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Phone number *</label><input type="tel" placeholder="+31 6 1234 5678"></div>
+            <div class="fg"><label>Email address</label><input type="email" placeholder="patient@email.com"></div>
+            <div class="fg" style="grid-column:span 2;"><label>Home address</label><input type="text" placeholder="Street, city, postal code"></div>
+          </div>
+          <div class="sec-label">Emergency contact</div>
+          <div class="form-grid">
+            <div class="fg"><label>Contact name *</label><input type="text" placeholder="Full name"></div>
+            <div class="fg"><label>Relationship</label><select><option>Spouse</option><option>Parent</option><option>Sibling</option><option>Child</option><option>Friend</option><option>Other</option></select></div>
+            <div class="fg"><label>Contact phone *</label><input type="tel" placeholder="+31 6 0000 0000"></div>
+            <div class="fg"><label>Contact email</label><input type="email" placeholder="contact@email.com"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3><i class="ti ti-heart-rate-monitor" style="margin-right:6px;font-size:14px;" aria-hidden="true"></i>Medical information</h3></div>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Department *</label><select><option>Select department</option><option>General Medicine</option><option>Cardiology</option><option>Orthopaedics</option><option>Maternity</option><option>Paediatrics</option><option>ICU</option><option>Neurology</option><option>Dermatology</option></select></div>
+            <div class="fg"><label>Assigned doctor *</label><select><option>Select doctor</option><option>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option><option>Dr. Kowalski — Maternity</option><option>Dr. Pham — General Med.</option><option>Dr. Adeyemi — Neurology</option></select></div>
+            <div class="fg"><label>Visit type *</label><select><option>Outpatient</option><option>Inpatient (Admission)</option><option>Emergency</option><option>Follow-up</option></select></div>
+            <div class="fg"><label>Insurance provider</label><input type="text" placeholder="e.g. Zilveren Kruis"></div>
+            <div class="fg"><label>Insurance number</label><input type="text" placeholder="Policy number"></div>
+            <div class="fg"><label>Allergies</label><input type="text" placeholder="e.g. Penicillin, Peanuts"></div>
+          </div>
+          <div class="form-grid" style="grid-template-columns:1fr;">
+            <div class="fg"><label>Chief complaint / reason for visit *</label><textarea placeholder="Describe the patient's main complaint or reason for this visit..."></textarea></div>
+            <div class="fg"><label>Past medical history</label><textarea placeholder="Previous diagnoses, surgeries, chronic conditions..."></textarea></div>
+            <div class="fg"><label>Current medications</label><textarea placeholder="List any medications currently being taken..."></textarea></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3><i class="ti ti-activity" style="margin-right:6px;font-size:14px;" aria-hidden="true"></i>Initial vitals</h3></div>
+          <div class="form-grid three">
+            <div class="fg"><label>Blood pressure (mmHg)</label><input type="text" placeholder="e.g. 120/80"></div>
+            <div class="fg"><label>Heart rate (bpm)</label><input type="number" placeholder="e.g. 72"></div>
+            <div class="fg"><label>Temperature (°C)</label><input type="number" placeholder="e.g. 36.6" step="0.1"></div>
+            <div class="fg"><label>Weight (kg)</label><input type="number" placeholder="e.g. 70"></div>
+            <div class="fg"><label>Height (cm)</label><input type="number" placeholder="e.g. 170"></div>
+            <div class="fg"><label>O₂ saturation (%)</label><input type="number" placeholder="e.g. 98"></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn" onclick="switchTab('records')">Cancel</button>
+          <button class="btn prim" onclick="registerPatient()"><i class="ti ti-check" style="font-size:12px;" aria-hidden="true"></i> Register patient</button>
+        </div>
+      </div>
+
+      <div class="section" id="sec-profile">
+        <div class="card">
+          <div class="profile-header">
+            <div class="profile-av" style="background:#E6F1FB;color:#185FA5;">AK</div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:500;color:var(--color-text-primary);">Amira Khalil</div>
+              <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;">#P-10041 &nbsp;·&nbsp; Female, 34 yrs &nbsp;·&nbsp; Blood group: O+</div>
+              <div style="margin-top:6px;display:flex;gap:6px;">
+                <span class="pill pb">Admitted</span>
+                <span class="pill" style="background:#EEEDFE;color:#3C3489;">Cardiology</span>
+                <span class="pill" style="background:#F1EFE8;color:#444441;">Dr. Mensah</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn"><i class="ti ti-edit" style="font-size:12px;" aria-hidden="true"></i> Edit</button>
+              <button class="btn grn" onclick="switchTab('admit')"><i class="ti ti-logout" style="font-size:12px;" aria-hidden="true"></i> Discharge</button>
+            </div>
+          </div>
+          <div class="info-grid" style="margin-bottom:14px;">
+            <div class="info-row"><span class="k">Phone</span><span class="v">+31 6 1234 5678</span></div>
+            <div class="info-row"><span class="k">Email</span><span class="v">a.khalil@email.com</span></div>
+            <div class="info-row"><span class="k">Address</span><span class="v">Westersingel 42, Rotterdam</span></div>
+            <div class="info-row"><span class="k">Emergency contact</span><span class="v">Youssef Khalil (Brother)</span></div>
+            <div class="info-row"><span class="k">Insurance</span><span class="v">Zilveren Kruis — ZK-882341</span></div>
+            <div class="info-row"><span class="k">Admitted on</span><span class="v">07 May 2026 · Ward B, Bed 14</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Current vitals</h3><span style="font-size:11px;color:var(--color-text-secondary);">Recorded 07 May 2026, 09:15</span></div>
+          <div class="vitals-grid">
+            <div class="vital"><div class="vk">Blood pressure</div><div class="vv">128/84</div><div class="vu">mmHg</div></div>
+            <div class="vital"><div class="vk">Heart rate</div><div class="vv">78</div><div class="vu">bpm</div></div>
+            <div class="vital"><div class="vk">Temperature</div><div class="vv">37.1</div><div class="vu">°C</div></div>
+            <div class="vital"><div class="vk">O₂ saturation</div><div class="vv">97</div><div class="vu">%</div></div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div class="vital" style="flex:1;text-align:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;"><div class="vk">Weight</div><div style="font-size:14px;font-weight:500;">62 kg</div></div>
+            <div class="vital" style="flex:1;text-align:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;"><div class="vk">Height</div><div style="font-size:14px;font-weight:500;">164 cm</div></div>
+            <div class="vital" style="flex:1;text-align:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;"><div class="vk">BMI</div><div style="font-size:14px;font-weight:500;">23.1</div></div>
+            <div class="vital" style="flex:1;text-align:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;"><div class="vk">Allergies</div><div style="font-size:14px;font-weight:500;">Penicillin</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Medical history &amp; visit timeline</h3><button class="btn" style="font-size:11px;padding:4px 10px;">+ Add note</button></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot" style="background:#185FA5;margin-top:4px;"></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span class="tl-date">07 May 2026</span><span class="tl-title">Admitted — chest pain &amp; palpitations</span><span class="pill pb" style="margin-left:auto;">Current</span></div><div class="tl-sub">Assigned to Ward B, Bed 14. ECG ordered. Dr. Mensah attending.</div></div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:#1D9E75;margin-top:4px;"></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span class="tl-date">12 Jan 2026</span><span class="tl-title">Outpatient — follow-up cardiology</span><span class="pill pg" style="margin-left:auto;">Discharged</span></div><div class="tl-sub">BP stable. Medication adjusted — Lisinopril 10mg. Next review in 3 months.</div></div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:#EF9F27;margin-top:4px;"></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span class="tl-date">04 Oct 2025</span><span class="tl-title">Admitted — hypertensive episode</span><span class="pill pg" style="margin-left:auto;">Discharged</span></div><div class="tl-sub">3-day admission. BP managed with IV medication. Discharged with oral medication plan.</div></div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:#888780;margin-top:4px;"></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span class="tl-date">17 Mar 2024</span><span class="tl-title">Lab results — lipid panel</span></div><div class="tl-sub">Total cholesterol: 5.8 mmol/L. LDL elevated. Dietary changes recommended.</div></div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:#888780;margin-top:4px;"></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span class="tl-date">02 Aug 2023</span><span class="tl-title">Registration — new patient</span></div><div class="tl-sub">Initial visit. Diagnosed with essential hypertension. Lifestyle counselling provided.</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Active prescriptions</h3><button class="btn" style="font-size:11px;padding:4px 10px;" onclick="sendPrompt('Open prescription management for patient Amira Khalil')">+ Add prescription ↗</button></div>
+          <table style="font-size:12px;">
+            <thead><tr><th>Medication</th><th>Dosage</th><th>Frequency</th><th>Prescribed by</th><th>Since</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Lisinopril</td><td>10 mg</td><td>Once daily</td><td>Dr. Mensah</td><td>12 Jan 2026</td><td><span class="pill pg">Active</span></td></tr>
+              <tr><td>Atorvastatin</td><td>20 mg</td><td>Once at night</td><td>Dr. Mensah</td><td>17 Mar 2024</td><td><span class="pill pg">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section" id="sec-admit">
+        <div class="card">
+          <div class="card-hd"><h3><i class="ti ti-arrow-bar-to-down" style="margin-right:6px;font-size:14px;" aria-hidden="true"></i>Admit patient</h3></div>
+          <div class="admit-steps">
+            <div class="step done"><div class="step-num"><i class="ti ti-check" style="font-size:9px;" aria-hidden="true"></i></div>Patient registered</div>
+            <span class="step-arrow">›</span>
+            <div class="step cur"><div class="step-num">2</div>Bed assignment</div>
+            <span class="step-arrow">›</span>
+            <div class="step"><div class="step-num">3</div>Doctor assigned</div>
+            <span class="step-arrow">›</span>
+            <div class="step"><div class="step-num">4</div>Confirm admission</div>
+          </div>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Patient *</label><select><option>Select patient</option><option selected>Amira Khalil — #P-10041</option><option>Chen Wei — #P-10040</option><option>Tom Hargreaves — #P-10039</option></select></div>
+            <div class="fg"><label>Admission type *</label><select><option>Planned admission</option><option>Emergency admission</option><option>Transfer from another ward</option></select></div>
+            <div class="fg"><label>Ward *</label><select><option>Ward A — General Medicine</option><option selected>Ward B — Cardiology</option><option>Ward C — Orthopaedics</option><option>Ward D — Maternity</option><option>Ward E — Paediatrics</option><option>ICU</option></select></div>
+            <div class="fg"><label>Bed number *</label><select><option>Bed 14 (available)</option><option>Bed 17 (available)</option><option>Bed 21 (available)</option></select></div>
+            <div class="fg"><label>Attending doctor *</label><select><option selected>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option></select></div>
+            <div class="fg"><label>Admission date *</label><input type="date" value="2026-05-07"></div>
+            <div class="fg" style="grid-column:span 2;"><label>Admission notes</label><textarea placeholder="Reason for admission, initial assessment..."></textarea></div>
+          </div>
+          <div class="action-row">
+            <button class="btn">Cancel</button>
+            <button class="btn prim">Confirm admission</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd"><h3><i class="ti ti-arrow-bar-up" style="margin-right:6px;font-size:14px;" aria-hidden="true"></i>Discharge patient</h3></div>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Patient *</label><select><option selected>Amira Khalil — #P-10041 (Ward B, Bed 14)</option><option>Kwame Asante — #P-10037 (Ward A, Bed 3)</option></select></div>
+            <div class="fg"><label>Discharge date *</label><input type="date" value="2026-05-07"></div>
+            <div class="fg"><label>Discharge type *</label><select><option>Regular discharge — recovered</option><option>Discharge against medical advice</option><option>Transfer to another facility</option><option>Deceased</option></select></div>
+            <div class="fg"><label>Follow-up appointment</label><input type="date"></div>
+            <div class="fg" style="grid-column:span 2;"><label>Discharge summary</label><textarea placeholder="Summary of treatment provided, outcome, medications on discharge, follow-up instructions..."></textarea></div>
+          </div>
+          <div class="action-row">
+            <button class="btn">Cancel</button>
+            <button class="btn grn"><i class="ti ti-check" style="font-size:12px;" aria-hidden="true"></i> Confirm discharge</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd"><h3>Currently admitted patients</h3><span style="font-size:12px;color:var(--color-text-secondary);">187 admitted · 3 ready for discharge</span></div>
+          <table style="font-size:12px;">
+            <thead><tr><th>Patient</th><th>Ward / Bed</th><th>Doctor</th><th>Admitted</th><th>Days</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>Amira Khalil #P-10041</td><td>Ward B / Bed 14</td><td>Dr. Mensah</td><td>07 May</td><td>0</td><td><span class="pill pb">Monitoring</span></td><td><button class="btn red" style="padding:3px 8px;font-size:10px;">Discharge</button></td></tr>
+              <tr><td>Fatima Al-Rashid #P-10040</td><td>ICU / Bed 2</td><td>Dr. Okafor</td><td>07 May</td><td>0</td><td><span class="pill pr">Critical</span></td><td><button class="btn" style="padding:3px 8px;font-size:10px;">View</button></td></tr>
+              <tr><td>Tom Hargreaves #P-10039</td><td>Ward C / Bed 7</td><td>Dr. Nair</td><td>06 May</td><td>1</td><td><span class="pill pa">Observation</span></td><td><button class="btn red" style="padding:3px 8px;font-size:10px;">Discharge</button></td></tr>
+              <tr><td>Sofia Andersson #P-10038</td><td>Ward D / Bed 3</td><td>Dr. Kowalski</td><td>06 May</td><td>1</td><td><span class="pill pg">Stable</span></td><td><button class="btn red" style="padding:3px 8px;font-size:10px;">Discharge</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const patients=[
+  {id:'#P-10041',name:'Amira Khalil',age:34,gender:'Female',dept:'Cardiology',doctor:'Dr. Mensah',date:'07 May 2026',status:'Admitted',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#P-10040',name:'Fatima Al-Rashid',age:29,gender:'Female',dept:'ICU',doctor:'Dr. Okafor',date:'07 May 2026',status:'Critical',color:'#FCEBEB',tc:'#A32D2D'},
+  {id:'#P-10039',name:'Tom Hargreaves',age:51,gender:'Male',dept:'Orthopaedics',doctor:'Dr. Nair',date:'06 May 2026',status:'Admitted',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#P-10038',name:'Sofia Andersson',age:27,gender:'Female',dept:'Maternity',doctor:'Dr. Kowalski',date:'06 May 2026',status:'Admitted',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#P-10037',name:'Kwame Asante',age:44,gender:'Male',dept:'General Medicine',doctor:'Dr. Pham',date:'05 May 2026',status:'Discharged',color:'#EAF3DE',tc:'#3B6D11'},
+  {id:'#P-10036',name:'Elena Petrov',age:62,gender:'Female',dept:'Neurology',doctor:'Dr. Adeyemi',date:'04 May 2026',status:'Outpatient',color:'#FAEEDA',tc:'#633806'},
+  {id:'#P-10035',name:'James Park',age:38,gender:'Male',dept:'Orthopaedics',doctor:'Dr. Nair',date:'03 May 2026',status:'Outpatient',color:'#FAEEDA',tc:'#633806'},
+  {id:'#P-10034',name:'Lucia Santos',age:31,gender:'Female',dept:'Maternity',doctor:'Dr. Kowalski',date:'02 May 2026',status:'Admitted',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#P-10033',name:'Omar Balogun',age:55,gender:'Male',dept:'General Medicine',doctor:'Dr. Pham',date:'01 May 2026',status:'Discharged',color:'#EAF3DE',tc:'#3B6D11'},
+  {id:'#P-10032',name:'Yuki Tanaka',age:18,gender:'Female',dept:'Paediatrics',doctor:'Dr. Russo',date:'30 Apr 2026',status:'Outpatient',color:'#FAEEDA',tc:'#633806'},
+];
+
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2);}
+function statusPill(s){
+  const m={Admitted:'pb',Critical:'pr',Discharged:'pg',Outpatient:'pa',Observation:'pa'};
+  return `<span class="pill ${m[s]||'pb'}">${s}</span>`;
+}
+function renderTable(data){
+  const tb=document.getElementById('patientTable');
+  tb.innerHTML=data.map(p=>`<tr onclick="openProfile('${p.id}')">
+    <td style="color:var(--color-text-secondary);font-size:11px;">${p.id}</td>
+    <td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:${p.color};color:${p.tc};">${initials(p.name)}</div>${p.name}</div></td>
+    <td>${p.age}</td><td>${p.gender}</td><td>${p.dept}</td><td>${p.doctor}</td><td>${p.date}</td>
+    <td>${statusPill(p.status)}</td>
+    <td><div style="display:flex;gap:4px;"><button class="btn" style="padding:3px 8px;font-size:10px;" onclick="event.stopPropagation();openProfile('${p.id}')"><i class="ti ti-eye" aria-hidden="true"></i></button><button class="btn" style="padding:3px 8px;font-size:10px;" onclick="event.stopPropagation();"><i class="ti ti-edit" aria-hidden="true"></i></button></div></td>
+  </tr>`).join('');
+}
+function filterPatients(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const d=document.getElementById('deptFilter').value;
+  const s=document.getElementById('statusFilter').value;
+  renderTable(patients.filter(p=>
+    (!q||(p.name+p.id+p.doctor).toLowerCase().includes(q))&&
+    (!d||p.dept===d)&&(!s||p.status===s)
+  ));
+}
+function openProfile(id){switchTab('profile');}
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  document.getElementById('sec-'+t).classList.add('on');
+}
+function showSection(t){switchTab(t);}
+function registerPatient(){
+  alert('Patient registered successfully! Assigning patient ID #P-10042.');
+  switchTab('records');
+}
+renderTable(patients);
+</script>

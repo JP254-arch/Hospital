@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointments & Scheduling — MediCore HMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --blue:#185FA5; --blue-lt:#E6F1FB; --blue-dk:#0C447C;
+    --green:#3B6D11; --green-lt:#EAF3DE;
+    --amber:#854F0B; --amber-lt:#FAEEDA;
+    --red:#A32D2D; --red-lt:#FCEBEB;
+    --gray:#5F5E5A; --gray-lt:#F1EFE8;
+    --teal:#0F6E56; --teal-lt:#E1F5EE;
+    --border:#e2e0d9; --bg:#f7f6f2; --card:#fff;
+    --text:#1a1916; --muted:#6b6a66; --hint:#9b9a96;
+    --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+    --r:10px; --r-lg:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;}
+  .app{display:flex;min-height:100vh;}
+
+  /* Sidebar */
+  .sidebar{width:220px;min-width:220px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .logo-ic{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+  .logo-ic i{color:#fff;font-size:18px;}
+  .logo h1{font-size:13px;font-weight:600;color:var(--text);}
+  .logo p{font-size:11px;color:var(--muted);}
+  .nav{padding:12px 8px;flex:1;}
+  .nl{font-size:10px;font-weight:600;color:var(--hint);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin:12px 0 4px;}
+  .ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--muted);margin-bottom:2px;transition:all .15s;}
+  .ni:hover{background:var(--bg);color:var(--text);}
+  .ni.act{background:var(--blue-lt);color:var(--blue);font-weight:500;}
+  .ni i{font-size:16px;width:18px;}
+  .ni .bx{margin-left:auto;font-size:10px;background:#E24B4A;color:#fff;padding:1px 6px;border-radius:8px;}
+
+  /* Main */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+  .topbar h2{font-size:16px;font-weight:600;flex:1;}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;font-weight:500;}
+  .btn:hover{background:var(--bg);}
+  .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .btn.primary:hover{background:var(--blue-dk);}
+  .btn.success{background:var(--green-lt);color:var(--green);border-color:#97C459;}
+  .btn.danger{background:var(--red-lt);color:var(--red);border-color:#F09595;}
+
+  .content{padding:24px;flex:1;}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+  .sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;}
+  .sc .ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+  .sc .lb{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500;}
+  .sc .vl{font-size:24px;font-weight:600;line-height:1;}
+  .sc .dl{font-size:11px;margin-top:4px;color:var(--muted);}
+  .dl.up{color:var(--green);}
+
+  /* Tabs */
+  .tabs{display:flex;gap:2px;background:#edecea;padding:3px;border-radius:var(--r);margin-bottom:22px;width:fit-content;}
+  .tab{padding:7px 16px;font-size:12px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--muted);transition:all .15s;}
+  .tab.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+
+  /* Calendar */
+  .cal-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-nav{display:flex;align-items:center;gap:10px;}
+  .cal-nav h3{font-size:15px;font-weight:600;}
+  .cal-nav-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+  .cal-nav-btn:hover{background:var(--bg);}
+  .cal-grid{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+  .cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg);}
+  .cal-dh{text-align:center;padding:10px 4px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  .cal-days{display:grid;grid-template-columns:repeat(7,1fr);}
+  .cal-day{border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:90px;padding:8px;cursor:pointer;transition:background .1s;}
+  .cal-day:hover{background:#fafaf8;}
+  .cal-day.today .day-num{background:var(--blue);color:#fff;border-radius:50%;}
+  .cal-day.other{opacity:.4;}
+  .cal-day:nth-child(7n){border-right:none;}
+  .day-num{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-bottom:4px;}
+  .day-appt{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+  .da-blue{background:var(--blue-lt);color:var(--blue);}
+  .da-green{background:var(--green-lt);color:var(--green);}
+  .da-amber{background:var(--amber-lt);color:var(--amber);}
+  .da-red{background:var(--red-lt);color:var(--red);}
+
+  /* Sidebar panel */
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;}
+  .panel h4{font-size:13px;font-weight:600;margin-bottom:14px;}
+  .appt-card{padding:10px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+  .appt-card:hover{border-color:#b5d4f4;}
+  .appt-time{font-size:11px;font-weight:600;color:var(--blue);margin-bottom:3px;font-family:var(--mono);}
+  .appt-name{font-size:12px;font-weight:600;color:var(--text);}
+  .appt-dept{font-size:11px;color:var(--muted);}
+  .pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .pg{background:var(--green-lt);color:var(--green);}
+  .pa{background:var(--amber-lt);color:var(--amber);}
+  .pb{background:var(--blue-lt);color:var(--blue);}
+  .pr{background:var(--red-lt);color:var(--red);}
+  .pt{background:var(--gray-lt);color:var(--gray);}
+
+  /* List view */
+  .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{font-size:11px;font-weight:600;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg);text-transform:uppercase;letter-spacing:.05em;}
+  td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#fafaf8;}
+  .av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+
+  /* Form */
+  .form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;}
+  .form-card h3{font-size:14px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .fg{display:flex;flex-direction:column;gap:5px;}
+  .fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .fg input,.fg select,.fg textarea{font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;}
+  .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);}
+  .fg textarea{resize:vertical;min-height:70px;}
+  .action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+
+  /* Toolbar */
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .srch{display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);flex:1;}
+  .srch i{color:var(--hint);font-size:15px;}
+  .srch input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);padding:9px 0;width:100%;font-family:var(--font);}
+  select.filter{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:var(--font);}
+
+  .section{display:none;}
+  .section.on{display:block;}
+
+  /* Doctor availability */
+  .doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .doc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;}
+  .doc-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .doc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}
+  .doc-name{font-size:13px;font-weight:600;}
+  .doc-dept{font-size:11px;color:var(--muted);}
+  .slots{display:flex;flex-wrap:wrap;gap:5px;}
+  .slot{font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-family:var(--mono);cursor:pointer;transition:all .15s;font-weight:500;}
+  .slot.free{background:var(--green-lt);border-color:#97C459;color:var(--green);}
+  .slot.busy{background:var(--bg);color:var(--hint);cursor:not-allowed;text-decoration:line-through;}
+  .slot.free:hover{background:#C0DD97;}
+
+  @media(max-width:900px){.cal-layout{grid-template-columns:1fr;} .stats{grid-template-columns:repeat(2,1fr);} .doc-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
+      <div><h1>MediCore HMS</h1><p>Appointments</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nl">Overview</div>
+      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
+      <div class="nl">Departments</div>
+      <a class="ni act" href="appointments.html"><i class="ti ti-calendar"></i> Appointments <span class="bx">12</span></a>
+      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
+      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
+      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy</a>
+      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
+      <div class="nl">Finance</div>
+      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
+      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
+      <div class="nl">System</div>
+      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Appointments & Scheduling</h2>
+      <button class="btn" onclick="switchTab('list')"><i class="ti ti-list"></i> List view</button>
+      <button class="btn" onclick="switchTab('availability')"><i class="ti ti-clock"></i> Doctor availability</button>
+      <button class="btn primary" onclick="switchTab('book')"><i class="ti ti-plus"></i> Book appointment</button>
+    </div>
+
+    <div class="content">
+      <div class="stats">
+        <div class="sc"><div class="ic" style="background:var(--blue-lt)"><i class="ti ti-calendar" style="color:var(--blue);font-size:16px"></i></div><div class="lb">Today's appointments</div><div class="vl">63</div><div class="dl up"><i class="ti ti-arrow-up" style="font-size:10px"></i> 12 this morning</div></div>
+        <div class="sc"><div class="ic" style="background:var(--green-lt)"><i class="ti ti-check" style="color:var(--green);font-size:16px"></i></div><div class="lb">Confirmed</div><div class="vl">41</div><div class="dl">65% of today</div></div>
+        <div class="sc"><div class="ic" style="background:var(--amber-lt)"><i class="ti ti-clock" style="color:var(--amber);font-size:16px"></i></div><div class="lb">Pending</div><div class="vl">14</div><div class="dl">Awaiting confirmation</div></div>
+        <div class="sc"><div class="ic" style="background:var(--red-lt)"><i class="ti ti-x" style="color:var(--red);font-size:16px"></i></div><div class="lb">Cancelled today</div><div class="vl">8</div><div class="dl up" style="color:var(--red)"><i class="ti ti-arrow-up" style="font-size:10px"></i> vs 5 yesterday</div></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" id="tab-calendar" onclick="switchTab('calendar')">Calendar view</div>
+        <div class="tab" id="tab-list" onclick="switchTab('list')">List view</div>
+        <div class="tab" id="tab-book" onclick="switchTab('book')">Book appointment</div>
+        <div class="tab" id="tab-availability" onclick="switchTab('availability')">Doctor availability</div>
+      </div>
+
+      <!-- CALENDAR VIEW -->
+      <div class="section on" id="sec-calendar">
+        <div class="cal-layout">
+          <div>
+            <div class="cal-header">
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+                <h3 id="cal-title">May 2026</h3>
+                <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);">
+                <span style="width:10px;height:10px;background:var(--blue-lt);border:1px solid #85B7EB;border-radius:3px;display:inline-block;"></span>Confirmed
+                <span style="width:10px;height:10px;background:var(--amber-lt);border:1px solid #EF9F27;border-radius:3px;display:inline-block;"></span>Pending
+                <span style="width:10px;height:10px;background:var(--red-lt);border:1px solid #F09595;border-radius:3px;display:inline-block;"></span>Cancelled
+              </div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-days-header">
+                <div class="cal-dh">Sun</div><div class="cal-dh">Mon</div><div class="cal-dh">Tue</div>
+                <div class="cal-dh">Wed</div><div class="cal-dh">Thu</div><div class="cal-dh">Fri</div><div class="cal-dh">Sat</div>
+              </div>
+              <div class="cal-days" id="calGrid"></div>
+            </div>
+          </div>
+          <div>
+            <div class="panel">
+              <h4><i class="ti ti-calendar-event" style="margin-right:6px;font-size:15px;vertical-align:-2px;color:var(--blue)"></i>Today — 7 May 2026</h4>
+              <div id="todayAppts"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div class="section" id="sec-list">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search patient, doctor, department..." id="searchAppt" oninput="filterAppts()"></div>
+          <select class="filter" id="deptFlt" onchange="filterAppts()">
+            <option value="">All departments</option>
+            <option>Cardiology</option><option>General Medicine</option><option>Orthopaedics</option>
+            <option>Maternity</option><option>Paediatrics</option><option>Neurology</option>
+          </select>
+          <select class="filter" id="statusFlt" onchange="filterAppts()">
+            <option value="">All statuses</option>
+            <option>Confirmed</option><option>Pending</option><option>In Progress</option><option>Cancelled</option><option>Completed</option>
+          </select>
+          <input type="date" style="font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);font-family:var(--font);" value="2026-05-07">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Appt. ID</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Date & Time</th><th>Type</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="apptTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BOOK APPOINTMENT -->
+      <div class="section" id="sec-book">
+        <div class="form-card">
+          <h3><i class="ti ti-calendar-plus" style="margin-right:8px;font-size:15px;vertical-align:-2px;color:var(--blue)"></i>Patient & doctor details</h3>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Patient *</label><select><option>Select patient</option><option>Amira Khalil — #P-10041</option><option>Chen Wei — #P-10040</option><option>Tom Hargreaves — #P-10039</option><option>Sofia Andersson — #P-10038</option><option>Omar Balogun — #P-10033</option></select></div>
+            <div class="fg"><label>Department *</label><select onchange="updateDoctors(this)"><option>Select department</option><option>Cardiology</option><option>General Medicine</option><option>Orthopaedics</option><option>Maternity</option><option>Paediatrics</option><option>Neurology</option><option>Dermatology</option></select></div>
+            <div class="fg"><label>Doctor *</label><select id="doctorSelect"><option>Select department first</option></select></div>
+            <div class="fg"><label>Appointment type *</label><select><option>Consultation</option><option>Follow-up</option><option>Procedure</option><option>Emergency</option><option>Routine check-up</option><option>Specialist referral</option></select></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3><i class="ti ti-clock" style="margin-right:8px;font-size:15px;vertical-align:-2px;color:var(--blue)"></i>Date & time</h3>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Appointment date *</label><input type="date" value="2026-05-08"></div>
+            <div class="fg"><label>Time slot *</label><select><option>09:00 AM</option><option>09:30 AM</option><option>10:00 AM</option><option>10:30 AM</option><option>11:00 AM</option><option>11:30 AM</option><option>12:00 PM</option><option>02:00 PM</option><option>02:30 PM</option><option>03:00 PM</option><option>03:30 PM</option><option>04:00 PM</option></select></div>
+            <div class="fg"><label>Duration</label><select><option>15 minutes</option><option>30 minutes</option><option selected>45 minutes</option><option>60 minutes</option><option>90 minutes</option></select></div>
+            <div class="fg"><label>Room / Consulting room</label><select><option>Room 101</option><option>Room 102</option><option>Room 103</option><option>Room 201</option><option>Room 202</option><option>Procedure Room A</option></select></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3><i class="ti ti-notes" style="margin-right:8px;font-size:15px;vertical-align:-2px;color:var(--blue)"></i>Additional information</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Priority</label><select><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+            <div class="fg"><label>Referral source</label><select><option>Walk-in</option><option>GP referral</option><option>Specialist referral</option><option>Emergency</option><option>Follow-up from previous visit</option></select></div>
+            <div class="fg" style="grid-column:span 2"><label>Notes for doctor</label><textarea placeholder="Any pre-appointment notes, symptoms, patient requests..."></textarea></div>
+            <div class="fg"><label>Send SMS reminder?</label><select><option>Yes — 24hrs before</option><option>Yes — 2hrs before</option><option>No</option></select></div>
+            <div class="fg"><label>Send email confirmation?</label><select><option>Yes</option><option>No</option></select></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn" onclick="switchTab('list')">Cancel</button>
+          <button class="btn primary" onclick="bookAppt()"><i class="ti ti-check"></i> Book appointment</button>
+        </div>
+      </div>
+
+      <!-- DOCTOR AVAILABILITY -->
+      <div class="section" id="sec-availability">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div class="srch" style="flex:0 0 260px"><i class="ti ti-search"></i><input type="text" placeholder="Search doctor..."></div>
+          <select class="filter"><option>All departments</option><option>Cardiology</option><option>General Medicine</option><option>Orthopaedics</option></select>
+          <input type="date" value="2026-05-07" style="font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);font-family:var(--font);">
+          <span style="font-size:12px;color:var(--muted);margin-left:auto;"><span style="color:var(--green);font-weight:600">●</span> Available &nbsp; <span style="color:var(--hint)">●</span> Booked</span>
+        </div>
+        <div class="doc-grid" id="docAvailGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Data
+const appointments = [
+  {id:'#A-2201',patient:'Amira Khalil',patId:'P-10041',doctor:'Dr. Mensah',dept:'Cardiology',datetime:'07 May · 09:00',type:'Consultation',status:'Confirmed',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#A-2202',patient:'James Park',patId:'P-10035',doctor:'Dr. Nair',dept:'Orthopaedics',datetime:'07 May · 10:30',type:'Follow-up',status:'Pending',color:'#EAF3DE',tc:'#3B6D11'},
+  {id:'#A-2203',patient:'Lucia Santos',patId:'P-10034',doctor:'Dr. Kowalski',dept:'Maternity',datetime:'07 May · 11:15',type:'Routine check-up',status:'Confirmed',color:'#FBEAF0',tc:'#993556'},
+  {id:'#A-2204',patient:'Omar Balogun',patId:'P-10033',doctor:'Dr. Pham',dept:'General Medicine',datetime:'07 May · 13:00',type:'Consultation',status:'In Progress',color:'#FAEEDA',tc:'#854F0B'},
+  {id:'#A-2205',patient:'Riya Patel',patId:'P-10030',doctor:'Dr. Russo',dept:'Paediatrics',datetime:'07 May · 14:30',type:'Follow-up',status:'Cancelled',color:'#FCEBEB',tc:'#A32D2D'},
+  {id:'#A-2206',patient:'Chen Wei',patId:'P-10040',doctor:'Dr. Mensah',dept:'Cardiology',datetime:'07 May · 15:00',type:'Procedure',status:'Confirmed',color:'#E6F1FB',tc:'#185FA5'},
+  {id:'#A-2207',patient:'Elena Petrov',patId:'P-10036',doctor:'Dr. Adeyemi',dept:'Neurology',datetime:'08 May · 09:30',type:'Specialist referral',status:'Confirmed',color:'#EEEDFE',tc:'#534AB7'},
+  {id:'#A-2208',patient:'Tom Hargreaves',patId:'P-10039',doctor:'Dr. Nair',dept:'Orthopaedics',datetime:'08 May · 10:00',type:'Follow-up',status:'Pending',color:'#EAF3DE',tc:'#3B6D11'},
+  {id:'#A-2209',patient:'Kwame Asante',patId:'P-10037',doctor:'Dr. Pham',dept:'General Medicine',datetime:'08 May · 11:00',type:'Routine check-up',status:'Pending',color:'#FAEEDA',tc:'#854F0B'},
+  {id:'#A-2210',patient:'Yuki Tanaka',patId:'P-10032',doctor:'Dr. Russo',dept:'Paediatrics',datetime:'08 May · 14:00',type:'Consultation',status:'Confirmed',color:'#EAF3DE',tc:'#3B6D11'},
+];
+
+const doctors = [
+  {name:'Dr. Mensah',dept:'Cardiology',color:'#E6F1FB',tc:'#185FA5',slots:['09:00','10:00','11:00','13:00','14:00','15:00'],busy:['09:00','13:00']},
+  {name:'Dr. Okafor',dept:'ICU',color:'#FCEBEB',tc:'#A32D2D',slots:['08:00','10:00','12:00','14:00'],busy:['08:00','10:00','12:00','14:00']},
+  {name:'Dr. Nair',dept:'Orthopaedics',color:'#EAF3DE',tc:'#3B6D11',slots:['09:30','10:30','11:30','14:30','15:30'],busy:['10:30']},
+  {name:'Dr. Kowalski',dept:'Maternity',color:'#FBEAF0',tc:'#993556',slots:['09:00','10:00','11:15','13:00','15:00'],busy:['11:15','13:00']},
+  {name:'Dr. Pham',dept:'General Medicine',color:'#FAEEDA',tc:'#854F0B',slots:['08:30','09:30','11:00','13:00','14:30'],busy:['13:00']},
+  {name:'Dr. Adeyemi',dept:'Neurology',color:'#EEEDFE',tc:'#534AB7',slots:['09:00','10:30','12:00','14:00','16:00'],busy:['09:00','12:00']},
+];
+
+const deptDoctors = {
+  'Cardiology':['Dr. Mensah','Dr. Osei'],'General Medicine':['Dr. Pham','Dr. Hassan'],
+  'Orthopaedics':['Dr. Nair','Dr. Brennan'],'Maternity':['Dr. Kowalski','Dr. Lim'],
+  'Paediatrics':['Dr. Russo','Dr. Clarke'],'Neurology':['Dr. Adeyemi','Dr. Fischer'],
+  'Dermatology':['Dr. Yilmaz']
+};
+
+function initials(n){return n.replace('Dr. ','').split(' ').map(w=>w[0]).join('').slice(0,2);}
+function statusPill(s){
+  const m={Confirmed:'pg','In Progress':'pb',Pending:'pa',Cancelled:'pr',Completed:'pt'};
+  return `<span class="pill ${m[s]||'pb'}">${s}</span>`;
+}
+
+function renderApptTable(data){
+  document.getElementById('apptTable').innerHTML = data.map(a=>`
+    <tr>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${a.id}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="av" style="background:${a.color};color:${a.tc}">${initials(a.patient)}</div>${a.patient}</div></td>
+      <td>${a.doctor}</td><td>${a.dept}</td>
+      <td style="font-family:var(--mono);font-size:12px">${a.datetime}</td>
+      <td><span style="font-size:11px;color:var(--muted)">${a.type}</span></td>
+      <td>${statusPill(a.status)}</td>
+      <td><div style="display:flex;gap:6px">
+        <button class="btn" style="padding:4px 10px;font-size:11px"><i class="ti ti-eye"></i></button>
+        <button class="btn" style="padding:4px 10px;font-size:11px"><i class="ti ti-edit"></i></button>
+        <button class="btn danger" style="padding:4px 10px;font-size:11px"><i class="ti ti-x"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterAppts(){
+  const q = document.getElementById('searchAppt').value.toLowerCase();
+  const d = document.getElementById('deptFlt').value;
+  const s = document.getElementById('statusFlt').value;
+  renderApptTable(appointments.filter(a =>
+    (!q||(a.patient+a.doctor+a.dept).toLowerCase().includes(q))&&
+    (!d||a.dept===d)&&(!s||a.status===s)
+  ));
+}
+
+function renderDocGrid(){
+  document.getElementById('docAvailGrid').innerHTML = doctors.map(d=>`
+    <div class="doc-card">
+      <div class="doc-header">
+        <div class="doc-av" style="background:${d.color};color:${d.tc}">${initials(d.name)}</div>
+        <div><div class="doc-name">${d.name}</div><div class="doc-dept">${d.dept}</div></div>
+        <span class="pill ${d.busy.length===d.slots.length?'pr':'pg'}" style="margin-left:auto">${d.busy.length===d.slots.length?'Full':'Available'}</span>
+      </div>
+      <div class="slots">${d.slots.map(s=>`<span class="slot ${d.busy.includes(s)?'busy':'free'}">${s}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function renderTodayAppts(){
+  const today = appointments.filter(a=>a.datetime.startsWith('07 May'));
+  document.getElementById('todayAppts').innerHTML = today.map(a=>`
+    <div class="appt-card">
+      <div class="appt-time">${a.datetime.split('· ')[1]}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="appt-name">${a.patient}</div><div class="appt-dept">${a.doctor} · ${a.dept}</div></div>
+        ${statusPill(a.status)}
+      </div>
+    </div>`).join('');
+}
+
+// Calendar
+let currentYear=2026, currentMonth=4;
+const calAppts = {
+  '2026-5-5':[{t:'09:00 Dr. Mensah',c:'da-blue'},{t:'11:00 Dr. Nair',c:'da-green'}],
+  '2026-5-7':[{t:'09:00 Cardiology',c:'da-blue'},{t:'11:15 Maternity',c:'da-green'},{t:'14:30 Cancelled',c:'da-red'}],
+  '2026-5-8':[{t:'09:30 Neurology',c:'da-blue'},{t:'11:00 Gen. Med',c:'da-amber'}],
+  '2026-5-12':[{t:'10:00 Ortho',c:'da-green'},{t:'14:00 Cardiology',c:'da-blue'}],
+  '2026-5-15':[{t:'09:00 Maternity',c:'da-green'}],
+  '2026-5-19':[{t:'11:30 Neurology',c:'da-blue'},{t:'15:00 Gen. Med',c:'da-amber'}],
+  '2026-5-22':[{t:'09:30 Cardiology',c:'da-blue'}],
+};
+const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendar(){
+  document.getElementById('cal-title').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  const firstDay = new Date(currentYear,currentMonth,1).getDay();
+  const daysInMonth = new Date(currentYear,currentMonth+1,0).getDate();
+  const daysInPrev = new Date(currentYear,currentMonth,0).getDate();
+  let html='';
+  for(let i=0;i<firstDay;i++){
+    html+=`<div class="cal-day other"><div class="day-num">${daysInPrev-firstDay+1+i}</div></div>`;
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===7&&currentMonth===4&&currentYear===2026;
+    const key=`${currentYear}-${currentMonth+1}-${d}`;
+    const appts=calAppts[key]||[];
+    html+=`<div class="cal-day${isToday?' today':''}">
+      <div class="day-num">${d}</div>
+      ${appts.slice(0,2).map(a=>`<div class="day-appt ${a.c}">${a.t}</div>`).join('')}
+      ${appts.length>2?`<div style="font-size:10px;color:var(--muted)">+${appts.length-2} more</div>`:''}
+    </div>`;
+  }
+  const remaining=(7-(firstDay+daysInMonth)%7)%7;
+  for(let i=1;i<=remaining;i++) html+=`<div class="cal-day other"><div class="day-num">${i}</div></div>`;
+  document.getElementById('calGrid').innerHTML=html;
+}
+
+function changeMonth(dir){
+  currentMonth+=dir;
+  if(currentMonth>11){currentMonth=0;currentYear++;}
+  if(currentMonth<0){currentMonth=11;currentYear--;}
+  renderCalendar();
+}
+
+function updateDoctors(sel){
+  const docs=deptDoctors[sel.value]||[];
+  const ds=document.getElementById('doctorSelect');
+  ds.innerHTML=docs.length?docs.map(d=>`<option>${d}</option>`).join(''):'<option>No doctors found</option>';
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('on'));
+  const tab=document.getElementById('tab-'+t);
+  const sec=document.getElementById('sec-'+t);
+  if(tab) tab.classList.add('on');
+  if(sec) sec.classList.add('on');
+}
+
+function bookAppt(){alert('Appointment booked successfully! Confirmation SMS sent to patient.');}
+
+renderApptTable(appointments);
+renderDocGrid();
+renderTodayAppts();
+renderCalendar();
+</script>
+</body>
+</html>

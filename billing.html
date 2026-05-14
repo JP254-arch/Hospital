@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing — MediCore HMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f6;--card:#ffffff;--card2:#f4f2ed;
+  --border:#e4e0d5;--border2:#d0ccbf;
+  --gold:#8b6914;--gold-lt:#fdf3d8;--gold-dk:#5c450d;
+  --green:#276843;--green-lt:#e3f2ea;
+  --blue:#1a4e8a;--blue-lt:#e6eef8;
+  --red:#b83232;--red-lt:#faeaea;
+  --amber:#9a5f08;--amber-lt:#fef4e0;
+  --gray:#5a5447;--gray-lt:#f0ece3;
+  --text:#1c1a15;--muted:#6b6455;--hint:#b0a99a;
+  --font:'Nunito Sans',sans-serif;--display:'Fraunces',serif;
+  --r:8px;--r-lg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+
+.sidebar{width:220px;min-width:220px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-ic{width:34px;height:34px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-ic i{color:#fff;font-size:18px;}
+.logo h1{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.logo p{font-size:11px;color:var(--muted);}
+.nav{padding:12px 8px;flex:1;}
+.nl{font-size:10px;font-weight:700;color:var(--hint);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin:12px 0 4px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:12px;color:var(--muted);margin-bottom:2px;transition:all .15s;}
+.ni:hover{background:var(--card2);color:var(--text);}
+.ni.act{background:var(--gold-lt);color:var(--gold);font-weight:700;}
+.ni i{font-size:16px;width:18px;}
+.ni .bx{margin-left:auto;font-size:10px;background:#b83232;color:#fff;padding:1px 6px;border-radius:8px;}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.topbar h2{font-family:var(--display);font-size:18px;font-weight:600;flex:1;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;font-weight:600;}
+.btn:hover{background:var(--card2);}
+.btn.primary{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.primary:hover{background:var(--gold-dk);}
+.btn.success{background:var(--green-lt);color:var(--green);border-color:rgba(39,104,67,.3);}
+.btn.danger{background:var(--red-lt);color:var(--red);border-color:rgba(184,50,50,.3);}
+
+.content{padding:24px;flex:1;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;position:relative;}
+.sc .accent-line{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.sc .ic{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.sc .lb{font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.sc .vl{font-family:var(--display);font-size:24px;font-weight:600;line-height:1;color:var(--text);}
+.sc .dl{font-size:11px;margin-top:5px;color:var(--muted);}
+.dl.up{color:var(--green);}
+.dl.dn{color:var(--red);}
+
+.tabs{display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);padding:3px;border-radius:var(--r);margin-bottom:22px;width:fit-content;}
+.tab{padding:7px 18px;font-size:12px;font-weight:700;border-radius:6px;cursor:pointer;color:var(--muted);transition:all .15s;}
+.tab.on{background:var(--gold);color:#fff;}
+
+.section{display:none;}
+.section.on{display:block;}
+
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:700;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);text-transform:uppercase;letter-spacing:.08em;}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--gold-lt);}
+.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700;}
+.pg{background:var(--green-lt);color:var(--green);}
+.pa{background:var(--amber-lt);color:var(--amber);}
+.pb{background:var(--blue-lt);color:var(--blue);}
+.pr{background:var(--red-lt);color:var(--red);}
+.pg2{background:var(--gold-lt);color:var(--gold);}
+
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.srch{display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);flex:1;}
+.srch i{color:var(--hint);font-size:15px;}
+.srch input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);padding:9px 0;width:100%;font-family:var(--font);}
+select.filter{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:var(--font);}
+
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;}
+.form-card h3{font-family:var(--display);font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--gold);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.fg input,.fg select,.fg textarea{font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg textarea{resize:vertical;min-height:70px;}
+.action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+
+/* Invoice preview */
+.invoice-preview{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;max-width:640px;margin:0 auto;}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.inv-logo{font-family:var(--display);font-size:20px;font-weight:700;color:var(--gold);}
+.inv-logo p{font-size:11px;color:var(--muted);font-family:var(--font);font-weight:400;margin-top:3px;}
+.inv-meta{text-align:right;font-size:12px;color:var(--muted);}
+.inv-meta strong{color:var(--text);font-size:14px;}
+.inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;padding:16px;background:var(--card2);border-radius:var(--r);}
+.inv-party h4{font-size:10px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+.inv-party p{font-size:13px;color:var(--text);}
+.inv-party span{font-size:12px;color:var(--muted);}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.inv-table th{font-size:11px;font-weight:700;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:.06em;}
+.inv-table td{padding:10px 10px;border-bottom:1px solid var(--border);font-size:13px;}
+.inv-table tr:last-child td{border-bottom:none;}
+.inv-totals{display:flex;justify-content:flex-end;}
+.inv-totals-box{width:220px;}
+.inv-totals-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--muted);}
+.inv-totals-row.total{border-top:2px solid var(--border);margin-top:6px;padding-top:10px;font-weight:700;color:var(--text);font-size:15px;font-family:var(--display);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
+      <div><h1>MediCore HMS</h1><p>Billing</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nl">Overview</div>
+      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
+      <div class="nl">Departments</div>
+      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
+      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
+      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
+      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy</a>
+      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
+      <div class="nl">Finance</div>
+      <a class="ni act" href="billing.html"><i class="ti ti-receipt"></i> Billing <span class="bx">6</span></a>
+      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
+      <div class="nl" >System</div>
+      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Billing & Payments</h2>
+      <button class="btn" onclick="switchTab('invoices')"><i class="ti ti-receipt"></i> Invoices</button>
+      <button class="btn" onclick="switchTab('insurance')"><i class="ti ti-shield"></i> Insurance</button>
+      <button class="btn primary" onclick="switchTab('create')"><i class="ti ti-plus"></i> New Invoice</button>
+    </div>
+
+    <div class="content">
+      <div class="stats">
+        <div class="sc">
+          <div class="accent-line" style="background:var(--gold)"></div>
+          <div class="ic" style="background:var(--gold-lt)"><i class="ti ti-currency-euro" style="color:var(--gold);font-size:16px"></i></div>
+          <div class="lb">Revenue today</div>
+          <div class="vl">€ 14,820</div>
+          <div class="dl up">↑ 8% vs yesterday</div>
+        </div>
+        <div class="sc">
+          <div class="accent-line" style="background:var(--green)"></div>
+          <div class="ic" style="background:var(--green-lt)"><i class="ti ti-check" style="color:var(--green);font-size:16px"></i></div>
+          <div class="lb">Paid invoices</div>
+          <div class="vl">41</div>
+          <div class="dl">This week</div>
+        </div>
+        <div class="sc">
+          <div class="accent-line" style="background:var(--amber)"></div>
+          <div class="ic" style="background:var(--amber-lt)"><i class="ti ti-clock" style="color:var(--amber);font-size:16px"></i></div>
+          <div class="lb">Pending payment</div>
+          <div class="vl">€ 8,430</div>
+          <div class="dl">6 invoices</div>
+        </div>
+        <div class="sc">
+          <div class="accent-line" style="background:var(--red)"></div>
+          <div class="ic" style="background:var(--red-lt)"><i class="ti ti-alert-circle" style="color:var(--red);font-size:16px"></i></div>
+          <div class="lb">Overdue</div>
+          <div class="vl">€ 2,150</div>
+          <div class="dl dn">3 invoices &gt;30 days</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" id="tab-invoices" onclick="switchTab('invoices')">All invoices</div>
+        <div class="tab" id="tab-payments" onclick="switchTab('payments')">Payments</div>
+        <div class="tab" id="tab-insurance" onclick="switchTab('insurance')">Insurance claims</div>
+        <div class="tab" id="tab-create" onclick="switchTab('create')">Create invoice</div>
+        <div class="tab" id="tab-preview" onclick="switchTab('preview')">Invoice preview</div>
+      </div>
+
+      <!-- INVOICES -->
+      <div class="section on" id="sec-invoices">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search patient, invoice ID..." id="invSearch" oninput="filterInvoices()"></div>
+          <select class="filter" id="invStatus" onchange="filterInvoices()">
+            <option value="">All statuses</option>
+            <option>Paid</option><option>Pending</option><option>Overdue</option><option>Cancelled</option><option>Partial</option>
+          </select>
+          <select class="filter" id="invType" onchange="filterInvoices()">
+            <option value="">All types</option>
+            <option>Consultation</option><option>Admission</option><option>Lab</option><option>Pharmacy</option><option>Surgery</option>
+          </select>
+          <input type="date" value="2026-05-07" style="font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);font-family:var(--font);">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Invoice #</th><th>Patient</th><th>Service type</th><th>Doctor</th><th>Issue date</th><th>Due date</th><th>Amount</th><th>Insurance</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="invTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="section" id="sec-payments">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search payment reference, patient..."></div>
+          <select class="filter"><option>All methods</option><option>Cash</option><option>Card</option><option>Bank transfer</option><option>Insurance</option><option>Mobile payment</option></select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Payment ref</th><th>Invoice #</th><th>Patient</th><th>Amount</th><th>Method</th><th>Date & time</th><th>Received by</th><th>Status</th></tr></thead>
+            <tbody id="payTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INSURANCE CLAIMS -->
+      <div class="section" id="sec-insurance">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search patient, insurer, claim ID..."></div>
+          <select class="filter"><option>All insurers</option><option>Zilveren Kruis</option><option>CZ Groep</option><option>VGZ</option><option>Menzis</option><option>ONVZ</option></select>
+          <select class="filter"><option>All statuses</option><option>Submitted</option><option>Approved</option><option>Rejected</option><option>Pending</option></select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Claim ID</th><th>Patient</th><th>Insurer</th><th>Policy #</th><th>Claimed</th><th>Approved</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="insTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CREATE INVOICE -->
+      <div class="section" id="sec-create">
+        <div class="form-card">
+          <h3>Patient & service information</h3>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Patient *</label><select><option>Select patient</option><option>Amira Khalil — #P-10041</option><option>Chen Wei — #P-10040</option><option>Tom Hargreaves — #P-10039</option><option>Sofia Andersson — #P-10038</option><option>Omar Balogun — #P-10033</option></select></div>
+            <div class="fg"><label>Service type *</label><select><option>Consultation</option><option>Admission / Inpatient</option><option>Laboratory</option><option>Pharmacy</option><option>Surgery</option><option>Radiology</option><option>Physiotherapy</option></select></div>
+            <div class="fg"><label>Doctor *</label><select><option>Dr. Mensah</option><option>Dr. Okafor</option><option>Dr. Nair</option><option>Dr. Kowalski</option><option>Dr. Pham</option><option>Dr. Adeyemi</option></select></div>
+            <div class="fg"><label>Invoice date *</label><input type="date" value="2026-05-07"></div>
+            <div class="fg"><label>Due date *</label><input type="date" value="2026-06-07"></div>
+            <div class="fg"><label>Payment method</label><select><option>Cash</option><option>Card</option><option>Bank transfer</option><option>Insurance</option><option>Mobile payment</option></select></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Line items</h3>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px;" id="lineTable">
+            <thead><tr>
+              <th style="text-align:left;padding:8px;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);">Description</th>
+              <th style="text-align:left;padding:8px;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);">Qty</th>
+              <th style="text-align:left;padding:8px;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);">Unit price (€)</th>
+              <th style="text-align:left;padding:8px;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);">Total (€)</th>
+              <th style="padding:8px;border-bottom:1px solid var(--border);"></th>
+            </tr></thead>
+            <tbody id="lineItems">
+              <tr><td><input type="text" placeholder="Service description" style="width:100%;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;" value="Cardiology consultation"></td><td><input type="number" value="1" style="width:60px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td><input type="number" value="120.00" step="0.01" style="width:100px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td style="font-weight:700;">€ 120.00</td><td><button class="btn danger" style="padding:4px 8px;font-size:11px">✕</button></td></tr>
+              <tr><td><input type="text" placeholder="Service description" style="width:100%;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;" value="ECG test"></td><td><input type="number" value="1" style="width:60px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td><input type="number" value="65.00" step="0.01" style="width:100px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td style="font-weight:700;">€ 65.00</td><td><button class="btn danger" style="padding:4px 8px;font-size:11px">✕</button></td></tr>
+            </tbody>
+          </table>
+          <button class="btn" onclick="addLine()" style="font-size:12px"><i class="ti ti-plus"></i> Add line item</button>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+            <div style="width:220px;">
+              <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--muted)"><span>Subtotal</span><span>€ 185.00</span></div>
+              <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--muted)"><span>Tax (21% VAT)</span><span>€ 38.85</span></div>
+              <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--muted)"><span>Insurance deduction</span><span style="color:var(--green)">- € 100.00</span></div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:15px;font-weight:700;border-top:2px solid var(--border);margin-top:6px;font-family:var(--display)"><span>Total due</span><span style="color:var(--gold)">€ 123.85</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Insurance & notes</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Insurance provider</label><input type="text" placeholder="e.g. Zilveren Kruis"></div>
+            <div class="fg"><label>Policy number</label><input type="text" placeholder="Policy / claim number"></div>
+            <div class="fg"><label>Insurance amount covered (€)</label><input type="number" placeholder="0.00" step="0.01"></div>
+            <div class="fg"><label>Discount (%)</label><input type="number" placeholder="0" min="0" max="100"></div>
+            <div class="fg" style="grid-column:span 2"><label>Notes</label><textarea placeholder="Any billing notes or special instructions..."></textarea></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn">Save draft</button>
+          <button class="btn" onclick="switchTab('preview')"><i class="ti ti-eye"></i> Preview</button>
+          <button class="btn primary" onclick="alert('Invoice #INV-2026-0094 created and sent to patient!')"><i class="ti ti-send"></i> Create & send</button>
+        </div>
+      </div>
+
+      <!-- INVOICE PREVIEW -->
+      <div class="section" id="sec-preview">
+        <div class="invoice-preview">
+          <div class="inv-header">
+            <div><div class="inv-logo">MediCore HMS<p>Westersingel 80, Rotterdam, NL</p><p style="margin-top:2px">+31 10 123 4567 · billing@medicorehms.nl</p></div></div>
+            <div class="inv-meta">
+              <div style="font-size:10px;color:var(--hint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Invoice</div>
+              <strong>#INV-2026-0093</strong>
+              <div style="margin-top:6px">Issue date: <strong>07 May 2026</strong></div>
+              <div>Due date: <strong>07 Jun 2026</strong></div>
+              <div style="margin-top:8px"><span class="pill pa">Pending payment</span></div>
+            </div>
+          </div>
+          <div class="inv-parties">
+            <div class="inv-party"><h4>Billed to</h4><p><strong>Amira Khalil</strong></p><span>#P-10041 · Female, 34 yrs<br>Westersingel 42, Rotterdam<br>a.khalil@email.com</span></div>
+            <div class="inv-party"><h4>Attending physician</h4><p><strong>Dr. Mensah</strong></p><span>Cardiology Department<br>MediCore HMS, Rotterdam<br>Reg. # NL-MED-44821</span></div>
+          </div>
+          <table class="inv-table">
+            <thead><tr><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit price</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>
+              <tr><td>Cardiology consultation</td><td style="text-align:center">1</td><td style="text-align:right">€ 120.00</td><td style="text-align:right;font-weight:700">€ 120.00</td></tr>
+              <tr><td>ECG (Electrocardiogram)</td><td style="text-align:center">1</td><td style="text-align:right">€ 65.00</td><td style="text-align:right;font-weight:700">€ 65.00</td></tr>
+              <tr><td>Full blood count (FBC) — laboratory</td><td style="text-align:center">1</td><td style="text-align:right">€ 12.00</td><td style="text-align:right;font-weight:700">€ 12.00</td></tr>
+              <tr><td>Lisinopril 10mg × 30 tabs — pharmacy</td><td style="text-align:center">1</td><td style="text-align:right">€ 8.50</td><td style="text-align:right;font-weight:700">€ 8.50</td></tr>
+            </tbody>
+          </table>
+          <div class="inv-totals">
+            <div class="inv-totals-box">
+              <div class="inv-totals-row"><span>Subtotal</span><span>€ 205.50</span></div>
+              <div class="inv-totals-row"><span>VAT (21%)</span><span>€ 43.16</span></div>
+              <div class="inv-totals-row"><span style="color:var(--green)">Insurance (Zilveren Kruis)</span><span style="color:var(--green)">- € 120.00</span></div>
+              <div class="inv-totals-row total"><span>Total due</span><span style="color:var(--gold)">€ 128.66</span></div>
+            </div>
+          </div>
+          <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--hint);line-height:1.6;">
+            Payment due within 30 days. Bank: ING NL · IBAN: NL82 INGB 0001 2345 67 · BIC: INGBNL2A<br>
+            Please reference invoice number on all payments. Queries: billing@medicorehms.nl
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end;">
+            <button class="btn"><i class="ti ti-printer"></i> Print</button>
+            <button class="btn"><i class="ti ti-download"></i> Download PDF</button>
+            <button class="btn primary" onclick="alert('Invoice sent to patient via email!')"><i class="ti ti-send"></i> Send to patient</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const invoices=[
+  {id:'#INV-2026-0093',patient:'Amira Khalil',type:'Consultation',doctor:'Dr. Mensah',issued:'07 May 2026',due:'07 Jun 2026',amount:'€ 128.66',insurance:'Zilveren Kruis',status:'Pending'},
+  {id:'#INV-2026-0092',patient:'Chen Wei',type:'Admission',doctor:'Dr. Mensah',issued:'07 May 2026',due:'07 Jun 2026',amount:'€ 2,450.00',insurance:'CZ Groep',status:'Pending'},
+  {id:'#INV-2026-0091',patient:'Fatima Al-Rashid',type:'Admission',doctor:'Dr. Okafor',issued:'07 May 2026',due:'07 Jun 2026',amount:'€ 5,800.00',insurance:'VGZ',status:'Partial'},
+  {id:'#INV-2026-0090',patient:'Tom Hargreaves',type:'Lab',doctor:'Dr. Nair',issued:'06 May 2026',due:'06 Jun 2026',amount:'€ 87.50',insurance:'None',status:'Paid'},
+  {id:'#INV-2026-0089',patient:'Sofia Andersson',type:'Admission',doctor:'Dr. Kowalski',issued:'06 May 2026',due:'06 Jun 2026',amount:'€ 1,920.00',insurance:'Menzis',status:'Pending'},
+  {id:'#INV-2026-0088',patient:'Omar Balogun',type:'Consultation',doctor:'Dr. Pham',issued:'05 May 2026',due:'05 Jun 2026',amount:'€ 95.00',insurance:'None',status:'Paid'},
+  {id:'#INV-2026-0085',patient:'Elena Petrov',type:'Pharmacy',doctor:'Dr. Adeyemi',issued:'01 May 2026',due:'01 Jun 2026',amount:'€ 340.00',insurance:'ONVZ',status:'Overdue'},
+  {id:'#INV-2026-0080',patient:'James Park',type:'Consultation',doctor:'Dr. Nair',issued:'25 Apr 2026',due:'25 May 2026',amount:'€ 150.00',insurance:'None',status:'Overdue'},
+];
+
+const payments=[
+  {ref:'#PAY-6601',inv:'#INV-2026-0090',patient:'Tom Hargreaves',amount:'€ 87.50',method:'Card',datetime:'06 May · 14:32',by:'Finance Desk',status:'Completed'},
+  {ref:'#PAY-6600',inv:'#INV-2026-0088',patient:'Omar Balogun',amount:'€ 95.00',method:'Cash',datetime:'05 May · 11:15',by:'Finance Desk',status:'Completed'},
+  {ref:'#PAY-6599',inv:'#INV-2026-0091',patient:'Fatima Al-Rashid',amount:'€ 2,900.00',method:'Insurance',datetime:'07 May · 09:00',by:'Auto',status:'Completed'},
+];
+
+const insurance=[
+  {id:'#CLM-8801',patient:'Amira Khalil',insurer:'Zilveren Kruis',policy:'ZK-882341',claimed:'€ 200.00',approved:'—',submitted:'07 May 2026',status:'Pending'},
+  {id:'#CLM-8800',patient:'Fatima Al-Rashid',insurer:'VGZ',policy:'VGZ-441920',claimed:'€ 4,000.00',approved:'€ 2,900.00',submitted:'07 May 2026',status:'Approved'},
+  {id:'#CLM-8799',patient:'Sofia Andersson',insurer:'Menzis',policy:'MZ-330921',claimed:'€ 1,920.00',approved:'—',submitted:'06 May 2026',status:'Submitted'},
+  {id:'#CLM-8798',patient:'Elena Petrov',insurer:'ONVZ',policy:'ONVZ-12830',claimed:'€ 280.00',approved:'€ 0',submitted:'01 May 2026',status:'Rejected'},
+];
+
+function statusPill(s){const m={Paid:'pg',Pending:'pa',Overdue:'pr',Partial:'pb',Cancelled:'pu',Completed:'pg',Submitted:'pb',Approved:'pg',Rejected:'pr'};return `<span class="pill ${m[s]||'pb'}">${s}</span>`;}
+
+function renderInvoices(data){
+  document.getElementById('invTable').innerHTML=data.map(i=>`<tr>
+    <td style="font-weight:700;color:var(--gold);font-size:12px">${i.id}</td>
+    <td><strong>${i.patient}</strong></td>
+    <td><span style="font-size:11px;color:var(--muted)">${i.type}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${i.doctor}</td>
+    <td style="font-size:12px">${i.issued}</td>
+    <td style="font-size:12px;color:${i.status==='Overdue'?'var(--red)':'var(--muted)'}">${i.due}</td>
+    <td style="font-weight:700">${i.amount}</td>
+    <td style="font-size:11px;color:var(--muted)">${i.insurance}</td>
+    <td>${statusPill(i.status)}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="btn" style="padding:4px 8px;font-size:11px" onclick="switchTab('preview')"><i class="ti ti-eye"></i></button>
+      <button class="btn success" style="padding:4px 8px;font-size:11px"><i class="ti ti-check"></i></button>
+      <button class="btn" style="padding:4px 8px;font-size:11px"><i class="ti ti-printer"></i></button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function filterInvoices(){
+  const q=document.getElementById('invSearch').value.toLowerCase();
+  const st=document.getElementById('invStatus').value;
+  const tp=document.getElementById('invType').value;
+  renderInvoices(invoices.filter(i=>
+    (!q||(i.patient+i.id).toLowerCase().includes(q))&&
+    (!st||i.status===st)&&(!tp||i.type===tp)
+  ));
+}
+
+function renderPayments(){
+  document.getElementById('payTable').innerHTML=payments.map(p=>`<tr>
+    <td style="font-size:11px;color:var(--muted)">${p.ref}</td>
+    <td style="font-size:12px;color:var(--gold)">${p.inv}</td>
+    <td><strong>${p.patient}</strong></td>
+    <td style="font-weight:700">${p.amount}</td>
+    <td><span style="font-size:11px;color:var(--muted)">${p.method}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${p.datetime}</td>
+    <td style="font-size:12px;color:var(--muted)">${p.by}</td>
+    <td>${statusPill(p.status)}</td>
+  </tr>`).join('');
+}
+
+function renderInsurance(){
+  document.getElementById('insTable').innerHTML=insurance.map(c=>`<tr>
+    <td style="font-size:11px;color:var(--muted)">${c.id}</td>
+    <td><strong>${c.patient}</strong></td>
+    <td>${c.insurer}</td>
+    <td style="font-size:11px;color:var(--muted)">${c.policy}</td>
+    <td style="font-weight:700">${c.claimed}</td>
+    <td style="font-weight:700;color:${c.approved==='€ 0'?'var(--red)':c.approved==='—'?'var(--muted)':'var(--green)'}">${c.approved}</td>
+    <td style="font-size:12px;color:var(--muted)">${c.submitted}</td>
+    <td>${statusPill(c.status)}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="btn" style="padding:4px 8px;font-size:11px"><i class="ti ti-eye"></i></button>
+      ${c.status==='Rejected'?`<button class="btn warn" style="padding:4px 8px;font-size:11px"><i class="ti ti-refresh"></i></button>`:''}
+    </div></td>
+  </tr>`).join('');
+}
+
+let lineCount=2;
+function addLine(){
+  const tbody=document.getElementById('lineItems');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" placeholder="Service description" style="width:100%;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td><input type="number" value="1" style="width:60px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td><input type="number" value="0.00" step="0.01" style="width:100px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);font-family:var(--font);outline:none;"></td><td style="font-weight:700">€ 0.00</td><td><button class="btn danger" style="padding:4px 8px;font-size:11px" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(e=>e.classList.remove('on'));
+  const tab=document.getElementById('tab-'+t),sec=document.getElementById('sec-'+t);
+  if(tab)tab.classList.add('on');if(sec)sec.classList.add('on');
+}
+
+renderInvoices(invoices);renderPayments();renderInsurance();
+</script>
+</body>
+</html>

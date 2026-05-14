@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratory — MediCore HMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f7f6;--card:#ffffff;--card2:#eef2f0;
+  --border:#d6ddd9;--border2:#c2cec9;
+  --teal:#0d7d62;--teal-lt:#e0f4ef;--teal-dk:#085a47;
+  --blue:#2563d4;--blue-lt:#e8effe;
+  --green:#2d7d46;--green-lt:#e4f5ea;
+  --amber:#b45309;--amber-lt:#fef3cd;
+  --red:#c0392b;--red-lt:#fdecea;
+  --gray:#4a5568;--gray-lt:#edf2f7;
+  --text:#1a2e28;--muted:#5a7168;--hint:#9ab5ac;
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+  --r:6px;--r-lg:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+
+.sidebar{width:220px;min-width:220px;background:var(--teal-dk);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;}
+.logo-ic{width:34px;height:34px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-ic i{color:#fff;font-size:18px;}
+.logo h1{font-family:var(--mono);font-size:13px;font-weight:600;color:#fff;}
+.logo p{font-size:11px;color:rgba(255,255,255,.5);}
+.nav{padding:12px 8px;flex:1;}
+.nl{font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin:12px 0 4px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:12px;color:rgba(255,255,255,.55);margin-bottom:2px;transition:all .15s;}
+.ni:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);}
+.ni.act{background:rgba(255,255,255,.15);color:#fff;font-weight:600;}
+.ni i{font-size:16px;width:18px;}
+.ni .bx{margin-left:auto;font-size:10px;background:#E24B4A;color:#fff;padding:1px 6px;border-radius:8px;}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.topbar h2{font-family:var(--mono);font-size:16px;font-weight:600;flex:1;color:var(--text);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;font-weight:500;}
+.btn:hover{background:var(--card2);}
+.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn.primary:hover{background:var(--teal-dk);}
+.btn.success{background:var(--green-lt);color:var(--green);border-color:rgba(45,125,70,.3);}
+.btn.warn{background:var(--amber-lt);color:var(--amber);border-color:rgba(180,83,9,.3);}
+
+.content{padding:24px;flex:1;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;border-left:3px solid transparent;}
+.sc.teal{border-left-color:var(--teal);}
+.sc.green{border-left-color:var(--green);}
+.sc.amber{border-left-color:var(--amber);}
+.sc.red{border-left-color:var(--red);}
+.sc .ic{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.sc .lb{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+.sc .vl{font-family:var(--mono);font-size:26px;font-weight:600;line-height:1;color:var(--text);}
+.sc .dl{font-size:11px;margin-top:5px;color:var(--muted);}
+.dl.up{color:var(--green);}
+
+.tabs{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:22px;width:fit-content;overflow:hidden;}
+.tab{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .15s;border-right:1px solid var(--border);font-family:var(--mono);}
+.tab:last-child{border-right:none;}
+.tab.on{background:var(--teal);color:#fff;}
+
+.section{display:none;}
+.section.on{display:block;}
+
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:600;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--teal-lt);cursor:pointer;}
+.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;font-family:var(--mono);}
+.pg{background:var(--green-lt);color:var(--green);}
+.pa{background:var(--amber-lt);color:var(--amber);}
+.pb{background:var(--blue-lt);color:var(--blue);}
+.pr{background:var(--red-lt);color:var(--red);}
+.pt{background:var(--teal-lt);color:var(--teal);}
+.pu{background:var(--gray-lt);color:var(--gray);}
+
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.srch{display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);flex:1;}
+.srch i{color:var(--hint);font-size:15px;}
+.srch input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);padding:9px 0;width:100%;font-family:var(--font);}
+select.filter{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:var(--font);}
+
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;}
+.form-card h3{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--teal);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);}
+.fg input,.fg select,.fg textarea{font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal);}
+.fg textarea{resize:vertical;min-height:70px;}
+.action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+
+/* Result card */
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:12px;}
+.result-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.result-id{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--teal);}
+.result-patient{font-size:14px;font-weight:600;}
+.result-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.result-table{width:100%;border-collapse:collapse;font-size:12px;}
+.result-table th{text-align:left;padding:6px 8px;background:var(--teal-lt);color:var(--teal);font-weight:600;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+.result-table td{padding:7px 8px;border-bottom:1px solid var(--border);}
+.result-table tr:last-child td{border-bottom:none;}
+.flag-high{color:var(--red);font-weight:700;}
+.flag-low{color:var(--blue);font-weight:700;}
+.flag-normal{color:var(--green);}
+.ref-range{color:var(--hint);font-size:11px;font-family:var(--mono);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
+      <div><h1>MediCore HMS</h1><p>Laboratory</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nl">Overview</div>
+      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
+      <div class="nl">Departments</div>
+      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
+      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
+      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
+      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy</a>
+      <a class="ni act" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
+      <div class="nl">Finance</div>
+      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
+      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
+      <div class="nl" >System</div>
+      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Laboratory</h2>
+      <button class="btn warn" onclick="switchTab('pending')"><i class="ti ti-clock"></i> Pending (14)</button>
+      <button class="btn success" onclick="switchTab('results')"><i class="ti ti-clipboard-check"></i> Results (14 ready)</button>
+      <button class="btn primary" onclick="switchTab('order')"><i class="ti ti-plus"></i> New Test Order</button>
+    </div>
+
+    <div class="content">
+      <div class="stats">
+        <div class="sc teal"><div class="ic" style="background:var(--teal-lt)"><i class="ti ti-test-pipe" style="color:var(--teal);font-size:16px"></i></div><div class="lb">Tests today</div><div class="vl">54</div><div class="dl up">↑ 8 vs yesterday</div></div>
+        <div class="sc green"><div class="ic" style="background:var(--green-lt)"><i class="ti ti-clipboard-check" style="color:var(--green);font-size:16px"></i></div><div class="lb">Results ready</div><div class="vl">14</div><div class="dl">Awaiting pickup</div></div>
+        <div class="sc amber"><div class="ic" style="background:var(--amber-lt)"><i class="ti ti-clock" style="color:var(--amber);font-size:16px"></i></div><div class="lb">In progress</div><div class="vl">22</div><div class="dl">Being processed</div></div>
+        <div class="sc red"><div class="ic" style="background:var(--red-lt)"><i class="ti ti-alert-triangle" style="color:var(--red);font-size:16px"></i></div><div class="lb">Critical flags</div><div class="vl">3</div><div class="dl">Notify immediately</div></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" id="tab-orders" onclick="switchTab('orders')">All orders</div>
+        <div class="tab" id="tab-pending" onclick="switchTab('pending')">Pending</div>
+        <div class="tab" id="tab-results" onclick="switchTab('results')">Results</div>
+        <div class="tab" id="tab-order" onclick="switchTab('order')">New order</div>
+        <div class="tab" id="tab-tests" onclick="switchTab('tests')">Test catalogue</div>
+      </div>
+
+      <!-- ALL ORDERS -->
+      <div class="section on" id="sec-orders">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search patient, test name, ID..." id="ordSearch" oninput="filterOrders()"></div>
+          <select class="filter" id="typeFilter" onchange="filterOrders()">
+            <option value="">All test types</option>
+            <option>Haematology</option><option>Biochemistry</option><option>Microbiology</option>
+            <option>Immunology</option><option>Urinalysis</option><option>Radiology</option>
+          </select>
+          <select class="filter" id="statusFilter" onchange="filterOrders()">
+            <option value="">All statuses</option>
+            <option>Ordered</option><option>Sample collected</option><option>Processing</option>
+            <option>Ready</option><option>Delivered</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Order ID</th><th>Patient</th><th>Test name</th><th>Type</th><th>Ordered by</th><th>Date</th><th>Priority</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="ordTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div class="section" id="sec-pending">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Order ID</th><th>Patient</th><th>Test</th><th>Priority</th><th>Ordered</th><th>Est. ready</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="pendTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="section" id="sec-results">
+        <div id="resultsList"></div>
+      </div>
+
+      <!-- NEW ORDER -->
+      <div class="section" id="sec-order">
+        <div class="form-card">
+          <h3>// Patient & request details</h3>
+          <div class="form-grid" style="margin-bottom:14px;">
+            <div class="fg"><label>Patient *</label><select><option>Select patient</option><option>Amira Khalil — #P-10041</option><option>Chen Wei — #P-10040</option><option>Tom Hargreaves — #P-10039</option><option>Sofia Andersson — #P-10038</option><option>Fatima Al-Rashid — #P-10040</option></select></div>
+            <div class="fg"><label>Requesting doctor *</label><select><option>Select doctor</option><option>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option><option>Dr. Kowalski — Maternity</option><option>Dr. Pham — General Medicine</option><option>Dr. Adeyemi — Neurology</option></select></div>
+            <div class="fg"><label>Priority *</label><select><option>Routine</option><option>Urgent</option><option>STAT (Immediate)</option></select></div>
+            <div class="fg"><label>Sample type</label><select><option>Blood (Venous)</option><option>Blood (Arterial)</option><option>Urine</option><option>Stool</option><option>Swab</option><option>CSF</option><option>Tissue biopsy</option></select></div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>// Select tests</h3>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;" id="testCheckboxes"></div>
+        </div>
+        <div class="form-card">
+          <h3>// Clinical notes</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Diagnosis / ICD code</label><input type="text" placeholder="e.g. I10 — Hypertension"></div>
+            <div class="fg"><label>Sample collection date/time</label><input type="datetime-local" value="2026-05-07T09:00"></div>
+            <div class="fg" style="grid-column:span 2"><label>Clinical notes for lab</label><textarea placeholder="Relevant clinical information, medications, symptoms..."></textarea></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn" onclick="switchTab('orders')">Cancel</button>
+          <button class="btn primary" onclick="alert('Lab order submitted! Order ID #L-5509 created.')"><i class="ti ti-send"></i> Submit order</button>
+        </div>
+      </div>
+
+      <!-- TEST CATALOGUE -->
+      <div class="section" id="sec-tests">
+        <div class="toolbar">
+          <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Search test name..."></div>
+          <select class="filter"><option>All categories</option><option>Haematology</option><option>Biochemistry</option><option>Microbiology</option><option>Immunology</option><option>Urinalysis</option></select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Test name</th><th>Category</th><th>Sample type</th><th>Turnaround</th><th>Reference range</th><th>Price (€)</th></tr></thead>
+            <tbody id="catTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const orders = [
+  {id:'#L-5508',patient:'Amira Khalil',test:'Full Blood Count (FBC)',type:'Haematology',doctor:'Dr. Mensah',date:'07 May',priority:'Urgent',status:'Ready'},
+  {id:'#L-5507',patient:'Fatima Al-Rashid',test:'Troponin I',type:'Biochemistry',doctor:'Dr. Okafor',date:'07 May',priority:'STAT',status:'Processing'},
+  {id:'#L-5506',patient:'Chen Wei',test:'Lipid Panel',type:'Biochemistry',doctor:'Dr. Mensah',date:'07 May',priority:'Routine',status:'Ready'},
+  {id:'#L-5505',patient:'Tom Hargreaves',test:'CRP & ESR',type:'Immunology',doctor:'Dr. Nair',date:'06 May',priority:'Routine',status:'Delivered'},
+  {id:'#L-5504',patient:'Omar Balogun',test:'HbA1c',type:'Biochemistry',doctor:'Dr. Pham',date:'06 May',priority:'Routine',status:'Ready'},
+  {id:'#L-5503',patient:'Lucia Santos',test:'Urine Culture',type:'Microbiology',doctor:'Dr. Kowalski',date:'06 May',priority:'Urgent',status:'Processing'},
+  {id:'#L-5502',patient:'Elena Petrov',test:'MRI Brain (request)',type:'Radiology',doctor:'Dr. Adeyemi',date:'05 May',priority:'Routine',status:'Sample collected'},
+  {id:'#L-5501',patient:'James Park',test:'Urine R&M',type:'Urinalysis',doctor:'Dr. Nair',date:'05 May',priority:'Routine',status:'Delivered'},
+];
+
+const testCatalogue = [
+  {name:'Full Blood Count (FBC)',cat:'Haematology',sample:'Blood (EDTA)',tat:'2–4 hrs',ref:'WBC, RBC, Hgb, Plt',price:12.00},
+  {name:'Lipid Panel',cat:'Biochemistry',sample:'Blood (Serum)',tat:'4–6 hrs',ref:'TC, LDL, HDL, TG',price:18.50},
+  {name:'Troponin I',cat:'Biochemistry',sample:'Blood (Serum)',tat:'1 hr',ref:'<0.04 µg/L',price:28.00},
+  {name:'HbA1c',cat:'Biochemistry',sample:'Blood (EDTA)',tat:'4–6 hrs',ref:'<6.5% (normal)',price:22.00},
+  {name:'Liver Function Test',cat:'Biochemistry',sample:'Blood (Serum)',tat:'4–6 hrs',ref:'ALT, AST, ALP, Bilirubin',price:24.00},
+  {name:'Renal Function Test',cat:'Biochemistry',sample:'Blood (Serum)',tat:'4–6 hrs',ref:'Creatinine, Urea, eGFR',price:20.00},
+  {name:'CRP & ESR',cat:'Immunology',sample:'Blood',tat:'2–3 hrs',ref:'CRP <5 mg/L',price:15.00},
+  {name:'Blood Culture',cat:'Microbiology',sample:'Blood',tat:'48–72 hrs',ref:'No growth (negative)',price:35.00},
+  {name:'Urine Culture',cat:'Microbiology',sample:'Mid-stream urine',tat:'24–48 hrs',ref:'No growth',price:25.00},
+  {name:'Urine R&M',cat:'Urinalysis',sample:'Mid-stream urine',tat:'1–2 hrs',ref:'Various',price:8.00},
+  {name:'Thyroid Function (TSH, T4)',cat:'Immunology',sample:'Blood (Serum)',tat:'6–8 hrs',ref:'TSH 0.4–4.0 mIU/L',price:30.00},
+  {name:'HIV Screen (4th Gen)',cat:'Immunology',sample:'Blood (Serum)',tat:'2–4 hrs',ref:'Non-reactive',price:18.00},
+];
+
+const labResults = [
+  {id:'#L-5508',patient:'Amira Khalil',test:'Full Blood Count (FBC)',doctor:'Dr. Mensah',date:'07 May 2026',critical:true,
+    rows:[
+      {param:'WBC',value:'11.2',unit:'x10⁹/L',ref:'4.0–10.0',flag:'H'},
+      {param:'RBC',value:'4.8',unit:'x10¹²/L',ref:'3.8–5.2',flag:'N'},
+      {param:'Haemoglobin',value:'12.1',unit:'g/dL',ref:'12.0–16.0',flag:'N'},
+      {param:'Haematocrit',value:'36',unit:'%',ref:'36–46',flag:'N'},
+      {param:'Platelets',value:'245',unit:'x10⁹/L',ref:'150–400',flag:'N'},
+      {param:'Neutrophils',value:'8.4',unit:'x10⁹/L',ref:'1.8–7.5',flag:'H'},
+    ]},
+  {id:'#L-5506',patient:'Chen Wei',test:'Lipid Panel',doctor:'Dr. Mensah',date:'07 May 2026',critical:false,
+    rows:[
+      {param:'Total Cholesterol',value:'5.8',unit:'mmol/L',ref:'<5.2',flag:'H'},
+      {param:'LDL Cholesterol',value:'3.9',unit:'mmol/L',ref:'<3.4',flag:'H'},
+      {param:'HDL Cholesterol',value:'1.1',unit:'mmol/L',ref:'>1.0',flag:'N'},
+      {param:'Triglycerides',value:'1.4',unit:'mmol/L',ref:'<1.7',flag:'N'},
+    ]},
+  {id:'#L-5504',patient:'Omar Balogun',test:'HbA1c',doctor:'Dr. Pham',date:'06 May 2026',critical:false,
+    rows:[
+      {param:'HbA1c',value:'7.8',unit:'%',ref:'<6.5',flag:'H'},
+      {param:'Estimated avg glucose',value:'9.7',unit:'mmol/L',ref:'<7.8',flag:'H'},
+    ]},
+];
+
+const testCheckboxList=['Full Blood Count (FBC)','Lipid Panel','Troponin I','HbA1c','Liver Function Test','Renal Function Test','CRP & ESR','Blood Culture','Urine Culture','Urine R&M','Thyroid Function (TSH,T4)','HIV Screen'];
+
+function statusPill(s){
+  const m={Ready:'pt',Delivered:'pg',Processing:'pa',Ordered:'pu','Sample collected':'pb','STAT':'pr',Urgent:'pa',Routine:'pu'};
+  return `<span class="pill ${m[s]||'pb'}">${s}</span>`;
+}
+function flagClass(f){return f==='H'?'flag-high':f==='L'?'flag-low':'flag-normal';}
+function flagText(f){return f==='H'?' ↑':f==='L'?' ↓':'';}
+
+function renderOrders(data){
+  document.getElementById('ordTable').innerHTML=data.map(o=>`
+    <tr>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${o.id}</td>
+      <td><strong>${o.patient}</strong></td>
+      <td>${o.test}</td>
+      <td><span style="font-size:11px;color:var(--muted)">${o.type}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${o.doctor}</td>
+      <td style="font-size:12px;font-family:var(--mono)">${o.date}</td>
+      <td>${statusPill(o.priority)}</td>
+      <td>${statusPill(o.status)}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn" style="padding:4px 8px;font-size:11px" onclick="switchTab('results')"><i class="ti ti-eye"></i></button>
+        <button class="btn" style="padding:4px 8px;font-size:11px"><i class="ti ti-printer"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterOrders(){
+  const q=document.getElementById('ordSearch').value.toLowerCase();
+  const tp=document.getElementById('typeFilter').value;
+  const st=document.getElementById('statusFilter').value;
+  renderOrders(orders.filter(o=>
+    (!q||(o.patient+o.test+o.id).toLowerCase().includes(q))&&
+    (!tp||o.type===tp)&&(!st||o.status===st)
+  ));
+}
+
+function renderPending(){
+  const pending=orders.filter(o=>!['Ready','Delivered'].includes(o.status));
+  document.getElementById('pendTable').innerHTML=pending.map(o=>`
+    <tr>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${o.id}</td>
+      <td><strong>${o.patient}</strong></td>
+      <td>${o.test}</td>
+      <td>${statusPill(o.priority)}</td>
+      <td style="font-family:var(--mono);font-size:12px">${o.date}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--muted)">~${o.priority==='STAT'?'1hr':o.priority==='Urgent'?'2-4hrs':'4-8hrs'}</td>
+      <td>${statusPill(o.status)}</td>
+      <td><button class="btn primary" style="font-size:11px;padding:5px 10px" onclick="alert('Status updated!')">Update status</button></td>
+    </tr>`).join('');
+}
+
+function renderResults(){
+  document.getElementById('resultsList').innerHTML=labResults.map(r=>`
+    <div class="result-card">
+      <div class="result-header">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+            <span class="result-id">${r.id}</span>
+            ${r.critical?'<span class="pill pr"><i class="ti ti-alert-triangle" style="font-size:10px"></i> Critical flag</span>':'<span class="pill pg">Normal range</span>'}
+          </div>
+          <div class="result-patient">${r.patient}</div>
+          <div class="result-meta">${r.test} · Ordered by ${r.doctor} · ${r.date}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" style="font-size:11px;padding:6px 12px"><i class="ti ti-printer"></i> Print</button>
+          <button class="btn primary" style="font-size:11px;padding:6px 12px"><i class="ti ti-send"></i> Send to doctor</button>
+        </div>
+      </div>
+      <table class="result-table">
+        <thead><tr><th>Parameter</th><th>Result</th><th>Unit</th><th>Reference range</th><th>Flag</th></tr></thead>
+        <tbody>${r.rows.map(row=>`
+          <tr>
+            <td>${row.param}</td>
+            <td class="${flagClass(row.flag)}" style="font-family:var(--mono);font-size:13px">${row.value}${flagText(row.flag)}</td>
+            <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${row.unit}</td>
+            <td class="ref-range">${row.ref}</td>
+            <td>${row.flag==='H'?'<span class="pill pr">HIGH</span>':row.flag==='L'?'<span class="pill pb">LOW</span>':'<span class="pill pg">Normal</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`).join('');
+}
+
+function renderCatalogue(){
+  document.getElementById('catTable').innerHTML=testCatalogue.map(t=>`
+    <tr>
+      <td><strong>${t.name}</strong></td>
+      <td><span style="font-size:11px;color:var(--muted)">${t.cat}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${t.sample}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--teal)">${t.tat}</td>
+      <td style="font-size:11px;color:var(--muted)">${t.ref}</td>
+      <td style="font-family:var(--mono);font-weight:600">€${t.price.toFixed(2)}</td>
+    </tr>`).join('');
+}
+
+function renderTestCheckboxes(){
+  document.getElementById('testCheckboxes').innerHTML=testCheckboxList.map(t=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;font-size:12px;background:var(--card2);">
+      <input type="checkbox" style="accent-color:var(--teal)"> ${t}
+    </label>`).join('');
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(e=>e.classList.remove('on'));
+  const tab=document.getElementById('tab-'+t),sec=document.getElementById('sec-'+t);
+  if(tab)tab.classList.add('on');if(sec)sec.classList.add('on');
+}
+
+renderOrders(orders);renderPending();renderResults();renderCatalogue();renderTestCheckboxes();
+</script>
+</body>
+</html>

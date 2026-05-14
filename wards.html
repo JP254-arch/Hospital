@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wards & Beds — MediCore HMS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--blue:#185FA5;--blue-lt:#E6F1FB;--blue-dk:#0C447C;--green:#3B6D11;--green-lt:#EAF3DE;--amber:#854F0B;--amber-lt:#FAEEDA;--red:#A32D2D;--red-lt:#FCEBEB;--purple:#3C3489;--purple-lt:#EEEDFE;--teal:#0F6E56;--teal-lt:#E1F5EE;--border:#e2e8f0;--bg:#f8fafc;--surface:#fff;--text:#1a202c;--muted:#64748b;--subtle:#94a3b8;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+.layout{display:flex;height:100vh;}
+.sidebar{width:210px;min-width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-ic{width:30px;height:30px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-ic i{color:#fff;font-size:16px;}
+.logo h1{font-size:13px;font-weight:600;}
+.logo p{font-size:10px;color:var(--muted);}
+.nav{padding:10px 8px;flex:1;}
+.nl{font-size:10px;font-weight:600;color:var(--subtle);text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:12px 0 4px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--muted);margin-bottom:1px;text-decoration:none;}
+.ni:hover{background:#f1f5f9;color:var(--text);}
+.ni.act{background:var(--blue-lt);color:var(--blue);font-weight:600;}
+.ni i{font-size:16px;width:18px;}
+.ni .bx{margin-left:auto;font-size:10px;background:var(--red);color:#fff;padding:1px 6px;border-radius:10px;}
+.main{flex:1;overflow-y:auto;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 22px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.topbar h2{font-size:15px;font-weight:600;flex:1;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:.15s;}
+.btn:hover{background:#f1f5f9;}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn.primary:hover{background:var(--blue-dk);}
+.btn.success{background:var(--green-lt);color:var(--green);border-color:#97C459;}
+.btn.danger{background:var(--red-lt);color:var(--red);border-color:#F09595;}
+.content{padding:20px 22px;}
+.tabs{display:flex;gap:2px;background:#f1f5f9;padding:3px;border-radius:8px;margin-bottom:20px;width:fit-content;}
+.tab{padding:6px 16px;font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--muted);}
+.tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.sc .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.sc .lb{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.sc .vl{font-size:22px;font-weight:700;}
+.sc .dl{font-size:10px;color:var(--muted);margin-top:3px;}
+.section{display:none;}
+.section.on{display:block;}
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;}
+.pg{background:var(--green-lt);color:var(--green);}
+.pa{background:var(--amber-lt);color:var(--amber);}
+.pb{background:var(--blue-lt);color:var(--blue);}
+.pr{background:var(--red-lt);color:var(--red);}
+.pt{background:var(--teal-lt);color:var(--teal);}
+.ward-section{margin-bottom:24px;}
+.ward-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ward-title{font-size:14px;font-weight:600;}
+.ward-meta{font-size:11px;color:var(--muted);}
+.occ-bar{width:180px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:10px;}
+.occ-fill{height:100%;border-radius:3px;}
+.bed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+.bed{border:1px solid var(--border);border-radius:10px;padding:10px 8px;cursor:pointer;transition:.15s;text-align:center;}
+.bed:hover{border-color:var(--blue);}
+.bed.occupied{background:var(--blue-lt);border-color:#85B7EB;}
+.bed.critical{background:var(--red-lt);border-color:#F09595;}
+.bed.available{background:var(--green-lt);border-color:#97C459;}
+.bed.reserved{background:var(--amber-lt);border-color:#EF9F27;}
+.bed.maintenance{background:#f8fafc;border-color:var(--subtle);}
+.bed-num{font-size:12px;font-weight:700;margin-bottom:4px;}
+.bed-name{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bed-detail{font-size:10px;color:var(--muted);margin-top:2px;}
+.bed-icon{font-size:18px;margin-bottom:4px;}
+.legend{display:flex;gap:14px;font-size:11px;margin-bottom:16px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:600;color:var(--muted);text-align:left;padding:9px 14px;border-bottom:1px solid var(--border);background:#f8fafc;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8fafc;}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.form-card h3{font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:11px;font-weight:600;color:var(--muted);}
+.fg input,.fg select,.fg textarea{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;}
+.fg input:focus,.fg select:focus{border-color:var(--blue);}
+.fg textarea{resize:vertical;min-height:60px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.action-row{display:flex;gap:10px;justify-content:flex-end;}
+.ward-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.ws-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.ws-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.ws-dept{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.ws-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.ws-fill{height:100%;border-radius:3px;}
+.ws-nums{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
+      <div><h1>MediCore HMS</h1><p>Admin Portal</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nl">Overview</div>
+      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
+      <div class="nl">Departments</div>
+      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
+      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
+      <a class="ni act" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
+      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy <span class="bx">3</span></a>
+      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
+      <div class="nl">Finance</div>
+      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
+      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
+      <div class="nl" >System</div>
+      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
+    </nav>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h2>Wards & Beds</h2>
+      <button class="btn" onclick="switchTab('transfer')"><i class="ti ti-arrows-transfer-up"></i> Transfer Patient</button>
+      <button class="btn primary" onclick="switchTab('assign')"><i class="ti ti-plus"></i> Assign Bed</button>
+    </div>
+    <div class="content">
+      <div class="tabs">
+        <div class="tab on" id="tab-map" onclick="switchTab('map')">Bed map</div>
+        <div class="tab" id="tab-overview" onclick="switchTab('overview')">Ward overview</div>
+        <div class="tab" id="tab-admissions" onclick="switchTab('admissions')">Current admissions</div>
+        <div class="tab" id="tab-assign" onclick="switchTab('assign')">Assign / Transfer</div>
+      </div>
+
+      <div class="stats">
+        <div class="sc"><div class="ic" style="background:var(--blue-lt)"><i class="ti ti-bed" style="color:var(--blue);font-size:15px"></i></div><div class="lb">Total beds</div><div class="vl">240</div><div class="dl">across 6 wards</div></div>
+        <div class="sc"><div class="ic" style="background:var(--red-lt)"><i class="ti ti-heart-rate-monitor" style="color:var(--red);font-size:15px"></i></div><div class="lb">Occupied</div><div class="vl">187</div><div class="dl">78% occupancy</div></div>
+        <div class="sc"><div class="ic" style="background:var(--green-lt)"><i class="ti ti-check" style="color:var(--green);font-size:15px"></i></div><div class="lb">Available</div><div class="vl">43</div><div class="dl">ready for admission</div></div>
+        <div class="sc"><div class="ic" style="background:var(--amber-lt)"><i class="ti ti-tool" style="color:var(--amber);font-size:15px"></i></div><div class="lb">Maintenance</div><div class="vl">10</div><div class="dl">out of service</div></div>
+      </div>
+
+      <!-- BED MAP -->
+      <div class="section on" id="sec-map">
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue-lt);border:1px solid #85B7EB"></div>Occupied</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red-lt);border:1px solid #F09595"></div>Critical</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green-lt);border:1px solid #97C459"></div>Available</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--amber-lt);border:1px solid #EF9F27"></div>Reserved</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f8fafc;border:1px solid var(--subtle)"></div>Maintenance</div>
+        </div>
+        <div id="bedMap"></div>
+      </div>
+
+      <!-- WARD OVERVIEW -->
+      <div class="section" id="sec-overview">
+        <div class="ward-summary" id="wardSummary"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Ward</th><th>Department</th><th>Total beds</th><th>Occupied</th><th>Available</th><th>Occupancy</th><th>Head nurse</th><th>Actions</th></tr></thead>
+            <tbody id="wardTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CURRENT ADMISSIONS -->
+      <div class="section" id="sec-admissions">
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);flex:1;">
+            <i class="ti ti-search" style="color:var(--subtle)"></i>
+            <input type="text" id="admSearch" placeholder="Search patient, bed, doctor..." style="border:none;outline:none;background:transparent;font-size:12px;padding:8px 0;width:100%;color:var(--text);" oninput="filterAdmissions()">
+          </div>
+          <select id="wardFilter" onchange="filterAdmissions()" style="font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface)"><option value="">All wards</option><option>Ward A</option><option>Ward B</option><option>Ward C</option><option>Ward D</option><option>Ward E</option><option>ICU</option></select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Ward / Bed</th><th>Department</th><th>Doctor</th><th>Admitted</th><th>Days</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="admTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ASSIGN / TRANSFER -->
+      <div class="section" id="sec-assign">
+        <div class="form-card">
+          <h3><i class="ti ti-bed" style="margin-right:6px"></i>Assign bed to patient</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Patient *</label><select><option>Select patient</option><option>Amira Khalil — #P-10041</option><option>New admission — register first</option></select></div>
+            <div class="fg"><label>Ward *</label><select id="wardSelect" onchange="updateBeds()"><option>Select ward</option><option>Ward A — General Medicine</option><option>Ward B — Cardiology</option><option>Ward C — Orthopaedics</option><option>Ward D — Maternity</option><option>Ward E — Paediatrics</option><option>ICU</option></select></div>
+            <div class="fg"><label>Available bed *</label><select id="bedSelect"><option>Select ward first</option></select></div>
+            <div class="fg"><label>Assigned doctor *</label><select><option>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option><option>Dr. Kowalski — Maternity</option><option>Dr. Pham — General Med.</option></select></div>
+            <div class="fg"><label>Admission date *</label><input type="date" value="2026-05-07"></div>
+            <div class="fg"><label>Expected stay (days)</label><input type="number" placeholder="e.g. 3"></div>
+            <div class="fg" style="grid-column:span 2"><label>Notes</label><textarea placeholder="Admission notes or special requirements..."></textarea></div>
+          </div>
+          <div class="action-row"><button class="btn">Cancel</button><button class="btn primary"><i class="ti ti-check"></i> Assign bed</button></div>
+        </div>
+
+        <div class="form-card">
+          <h3><i class="ti ti-arrows-transfer-up" style="margin-right:6px"></i>Transfer patient between beds/wards</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Patient to transfer *</label><select><option>Amira Khalil — Ward B, Bed 14</option><option>Fatima Al-Rashid — ICU, Bed 2</option><option>Tom Hargreaves — Ward C, Bed 7</option><option>Sofia Andersson — Ward D, Bed 3</option></select></div>
+            <div class="fg"><label>Reason for transfer *</label><select><option>Change in condition</option><option>Ward upgrade</option><option>Doctor request</option><option>Bed required for emergency</option><option>Patient request</option></select></div>
+            <div class="fg"><label>Transfer to ward *</label><select><option>Ward A — General Medicine</option><option>Ward B — Cardiology</option><option>Ward C — Orthopaedics</option><option>ICU</option></select></div>
+            <div class="fg"><label>Transfer to bed *</label><select><option>Bed 2 (available)</option><option>Bed 5 (available)</option><option>Bed 11 (available)</option></select></div>
+            <div class="fg" style="grid-column:span 2"><label>Transfer notes</label><textarea placeholder="Clinical reason and notes for this transfer..."></textarea></div>
+          </div>
+          <div class="action-row"><button class="btn">Cancel</button><button class="btn success"><i class="ti ti-check"></i> Confirm transfer</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const wards=[
+  {id:'ward-a',name:'Ward A',dept:'General Medicine',total:50,occupied:38,reserved:2,maint:2,nurse:'Sister Fatou Diallo',color:'#185FA5'},
+  {id:'ward-b',name:'Ward B',dept:'Cardiology',total:40,occupied:35,reserved:1,maint:1,nurse:'Sister Priya Sharma',color:'#A32D2D'},
+  {id:'ward-c',name:'Ward C',dept:'Orthopaedics',total:30,occupied:18,reserved:2,maint:2,nurse:'Sister Amaka Eze',color:'#3C3489'},
+  {id:'ward-d',name:'Ward D',dept:'Maternity',total:35,occupied:26,reserved:3,maint:1,nurse:'Sister Lena Berg',color:'#993556'},
+  {id:'ward-e',name:'Ward E',dept:'Paediatrics',total:30,occupied:22,reserved:1,maint:2,nurse:'Sister Yemi Obi',color:'#0F6E56'},
+  {id:'ward-icu',name:'ICU',dept:'Intensive Care',total:20,occupied:19,reserved:0,maint:1,nurse:'Sister Ruth Addo',color:'#854F0B'},
+];
+
+const admissions=[
+  {patient:'Amira Khalil',id:'#P-10041',ward:'Ward B',bed:'Bed 14',dept:'Cardiology',doctor:'Dr. Mensah',date:'07 May 2026',days:0,status:'Monitoring'},
+  {patient:'Fatima Al-Rashid',id:'#P-10040',ward:'ICU',bed:'Bed 2',dept:'ICU',doctor:'Dr. Okafor',date:'07 May 2026',days:0,status:'Critical'},
+  {patient:'Tom Hargreaves',id:'#P-10039',ward:'Ward C',bed:'Bed 7',dept:'Orthopaedics',doctor:'Dr. Nair',date:'06 May 2026',days:1,status:'Observation'},
+  {patient:'Sofia Andersson',id:'#P-10038',ward:'Ward D',bed:'Bed 3',dept:'Maternity',doctor:'Dr. Kowalski',date:'06 May 2026',days:1,status:'Stable'},
+  {patient:'Lucia Santos',id:'#P-10034',ward:'Ward D',bed:'Bed 9',dept:'Maternity',doctor:'Dr. Kowalski',date:'02 May 2026',days:5,status:'Stable'},
+  {patient:'Chen Wei',id:'#P-10041b',ward:'Ward B',bed:'Bed 20',dept:'Cardiology',doctor:'Dr. Mensah',date:'07 May 2026',days:0,status:'Monitoring'},
+];
+
+const statusMap={Monitoring:'pb',Critical:'pr',Observation:'pa',Stable:'pg'};
+
+function renderBedMap(){
+  const map=document.getElementById('bedMap');
+  map.innerHTML=wards.map(w=>{
+    const avail=w.total-w.occupied-w.reserved-w.maint;
+    const pct=Math.round(w.occupied/w.total*100);
+    let beds='';
+    for(let i=1;i<=w.total;i++){
+      let cls='available',label='—',detail='Free';
+      if(i<=w.occupied){cls=w.id==='ward-icu'&&i<=3?'critical':'occupied';label=`P-${10000+i}`;detail=w.id==='ward-icu'&&i<=3?'Critical':'Admitted';}
+      else if(i<=w.occupied+w.reserved){cls='reserved';label='RSVD';detail='Reserved';}
+      else if(i>w.total-w.maint){cls='maintenance';label='MAINT';detail='Out of service';}
+      beds+=`<div class="bed ${cls}" title="${w.name} Bed ${i}"><div class="bed-icon"><i class="ti ti-bed"></i></div><div class="bed-num">Bed ${i}</div><div class="bed-name">${label}</div><div class="bed-detail">${detail}</div></div>`;
+    }
+    return `<div class="ward-section"><div class="ward-header"><div><span class="ward-title">${w.name} — ${w.dept}</span><div class="occ-bar"><div class="occ-fill" style="width:${pct}%;background:${pct>90?'#E24B4A':pct>70?'#EF9F27':'#639922'}"></div></div><span style="font-size:11px;color:var(--muted);margin-left:8px">${pct}% occupied</span></div><div class="ward-meta">${w.occupied}/${w.total} beds &nbsp;·&nbsp; ${avail} available &nbsp;·&nbsp; ${w.reserved} reserved</div></div><div class="bed-grid">${beds}</div></div>`;
+  }).join('');
+}
+
+function renderWardSummary(){
+  document.getElementById('wardSummary').innerHTML=wards.map(w=>{
+    const pct=Math.round(w.occupied/w.total*100);
+    const avail=w.total-w.occupied-w.reserved-w.maint;
+    return `<div class="ws-card"><div class="ws-name">${w.name}</div><div class="ws-dept">${w.dept}</div><div class="ws-bar"><div class="ws-fill" style="width:${pct}%;background:${pct>90?'#E24B4A':pct>70?'#EF9F27':'#639922'}"></div></div><div class="ws-nums"><span>${w.occupied} occupied</span><span>${avail} free</span><span style="font-weight:600">${pct}%</span></div></div>`;
+  }).join('');
+  document.getElementById('wardTable').innerHTML=wards.map(w=>{
+    const avail=w.total-w.occupied-w.reserved-w.maint;
+    const pct=Math.round(w.occupied/w.total*100);
+    return `<tr><td><strong>${w.name}</strong></td><td>${w.dept}</td><td>${w.total}</td><td>${w.occupied}</td><td><strong style="color:var(--green)">${avail}</strong></td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:60px;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${pct>90?'#E24B4A':pct>70?'#EF9F27':'#639922'};border-radius:3px"></div></div><span style="font-size:11px">${pct}%</span></div></td><td>${w.nurse}</td><td><button class="btn" style="padding:4px 8px;font-size:10px"><i class="ti ti-eye"></i> View</button></td></tr>`;
+  }).join('');
+}
+
+function renderAdmissions(data){
+  document.getElementById('admTable').innerHTML=data.map(a=>`<tr>
+    <td><div style="font-weight:600;font-size:12px">${a.patient}</div><div style="font-size:10px;color:var(--muted)">${a.id}</div></td>
+    <td><strong>${a.ward}</strong> / ${a.bed}</td><td>${a.dept}</td><td>${a.doctor}</td><td>${a.date}</td>
+    <td>${a.days} day${a.days!==1?'s':''}</td>
+    <td><span class="pill ${statusMap[a.status]||'pb'}">${a.status}</span></td>
+    <td><div style="display:flex;gap:4px;"><button class="btn" style="padding:4px 8px;font-size:10px">Transfer</button><button class="btn danger" style="padding:4px 8px;font-size:10px">Discharge</button></div></td>
+  </tr>`).join('');
+}
+
+function filterAdmissions(){
+  const q=document.getElementById('admSearch').value.toLowerCase();
+  const w=document.getElementById('wardFilter').value;
+  renderAdmissions(admissions.filter(a=>(!q||(a.patient+a.ward+a.doctor).toLowerCase().includes(q))&&(!w||a.ward===w)));
+}
+
+function updateBeds(){
+  const sel=document.getElementById('bedSelect');
+  const ward=document.getElementById('wardSelect').value;
+  const beds=ward.includes('ICU')?['Bed 5 (available)','Bed 8 (available)']:['Bed 2 (available)','Bed 6 (available)','Bed 11 (available)','Bed 15 (available)'];
+  sel.innerHTML=beds.map(b=>`<option>${b}</option>`).join('');
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  document.getElementById('sec-'+t).classList.add('on');
+}
+
+renderBedMap();renderWardSummary();renderAdmissions(admissions);
+</script>
+</body>
+</html>
