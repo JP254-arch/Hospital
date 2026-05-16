@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patients — MediCore HMS</title>
+<link rel="stylesheet" href="medicore.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title flex-1">Patients</div>
+      <button class="btn" onclick="switchTab('records')"><i class="ti ti-list"></i> All Records</button>
+      <button class="btn btn-primary" onclick="switchTab('register')"><i class="ti ti-plus"></i> New Patient</button>
+    </div>
+
+    <div class="content">
+      <div class="tabs">
+        <div class="tab active" id="tab-records"  onclick="switchTab('records')">Patient Records</div>
+        <div class="tab"        id="tab-register" onclick="switchTab('register')">Register Patient</div>
+        <div class="tab"        id="tab-profile"  onclick="switchTab('profile')">Patient Profile</div>
+        <div class="tab"        id="tab-admit"    onclick="switchTab('admit')">Admit / Discharge</div>
+      </div>
+
+      <!-- ── RECORDS ── -->
+      <div class="section active" id="sec-records">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--accent-lt)"><i class="ti ti-users" style="color:var(--accent)"></i></div>
+            <div class="stat-label">Total Patients</div><div class="stat-value">4,821</div>
+            <div class="stat-delta up">↑ 34 this week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--green-lt)"><i class="ti ti-user-check" style="color:var(--green)"></i></div>
+            <div class="stat-label">Currently Admitted</div><div class="stat-value">187</div>
+            <div class="stat-delta up">78% occupancy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--amber-lt)"><i class="ti ti-clock" style="color:var(--amber)"></i></div>
+            <div class="stat-label">Outpatients Today</div><div class="stat-value">97</div>
+            <div class="stat-delta nt">63 appointments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--red-lt)"><i class="ti ti-alert-circle" style="color:var(--red)"></i></div>
+            <div class="stat-label">New Registrations</div><div class="stat-value">12</div>
+            <div class="stat-delta up">↑ today</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-wrap"><i class="ti ti-search"></i><input type="text" placeholder="Search by name, ID, phone…" id="searchInput" oninput="filterPatients()"></div>
+          <select class="filter-select" id="deptFilter" onchange="filterPatients()">
+            <option value="">All departments</option>
+            <option>Cardiology</option><option>General Medicine</option><option>Orthopaedics</option>
+            <option>Maternity</option><option>Paediatrics</option><option>ICU</option><option>Neurology</option>
+          </select>
+          <select class="filter-select" id="statusFilter" onchange="filterPatients()">
+            <option value="">All statuses</option>
+            <option>Admitted</option><option>Outpatient</option><option>Discharged</option><option>Critical</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Department</th><th>Doctor</th><th>Admitted</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="patientTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── REGISTER ── -->
+      <div class="section" id="sec-register">
+        <div class="form-card">
+          <div class="form-card-title"><i class="ti ti-user-plus"></i> Personal Information</div>
+          <div class="form-grid mb-14">
+            <div class="field"><label>First name *</label><input type="text" placeholder="e.g. Amira"></div>
+            <div class="field"><label>Last name *</label><input type="text" placeholder="e.g. Khalil"></div>
+            <div class="field"><label>Date of birth *</label><input type="date"></div>
+            <div class="field"><label>Gender *</label><select><option>Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="field"><label>National ID / Passport</label><input type="text" placeholder="ID number"></div>
+            <div class="field"><label>Blood group</label><select><option>Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Contact Details</div>
+          <div class="form-grid mb-14">
+            <div class="field"><label>Phone number *</label><input type="tel" placeholder="+31 6 1234 5678"></div>
+            <div class="field"><label>Email address</label><input type="email" placeholder="patient@email.com"></div>
+            <div class="field col-2"><label>Home address</label><input type="text" placeholder="Street, city, postal code"></div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Emergency Contact</div>
+          <div class="form-grid">
+            <div class="field"><label>Contact name *</label><input type="text" placeholder="Full name"></div>
+            <div class="field"><label>Relationship</label><select><option>Spouse</option><option>Parent</option><option>Sibling</option><option>Child</option><option>Friend</option><option>Other</option></select></div>
+            <div class="field"><label>Contact phone *</label><input type="tel" placeholder="+31 6 0000 0000"></div>
+            <div class="field"><label>Contact email</label><input type="email" placeholder="contact@email.com"></div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title"><i class="ti ti-heart-rate-monitor"></i> Medical Information</div>
+          <div class="form-grid mb-14">
+            <div class="field"><label>Department *</label><select><option>Select department</option><option>General Medicine</option><option>Cardiology</option><option>Orthopaedics</option><option>Maternity</option><option>Paediatrics</option><option>ICU</option><option>Neurology</option></select></div>
+            <div class="field"><label>Assigned doctor *</label><select><option>Select doctor</option><option>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option><option>Dr. Kowalski — Maternity</option><option>Dr. Pham — General Med.</option></select></div>
+            <div class="field"><label>Visit type *</label><select><option>Outpatient</option><option>Inpatient (Admission)</option><option>Emergency</option><option>Follow-up</option></select></div>
+            <div class="field"><label>Insurance provider</label><input type="text" placeholder="e.g. Zilveren Kruis"></div>
+            <div class="field"><label>Insurance number</label><input type="text" placeholder="Policy number"></div>
+            <div class="field"><label>Allergies</label><input type="text" placeholder="e.g. Penicillin, Peanuts"></div>
+          </div>
+          <div class="form-grid-1">
+            <div class="field"><label>Chief complaint / reason for visit *</label><textarea placeholder="Describe the patient's main complaint…"></textarea></div>
+            <div class="field"><label>Past medical history</label><textarea placeholder="Previous diagnoses, surgeries, chronic conditions…"></textarea></div>
+            <div class="field"><label>Current medications</label><textarea placeholder="List any medications currently being taken…"></textarea></div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title"><i class="ti ti-activity"></i> Initial Vitals</div>
+          <div class="form-grid-3">
+            <div class="field"><label>Blood pressure (mmHg)</label><input type="text" placeholder="e.g. 120/80"></div>
+            <div class="field"><label>Heart rate (bpm)</label><input type="number" placeholder="72"></div>
+            <div class="field"><label>Temperature (°C)</label><input type="number" placeholder="36.6" step="0.1"></div>
+            <div class="field"><label>Weight (kg)</label><input type="number" placeholder="70"></div>
+            <div class="field"><label>Height (cm)</label><input type="number" placeholder="170"></div>
+            <div class="field"><label>O₂ saturation (%)</label><input type="number" placeholder="98"></div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" onclick="switchTab('records')">Cancel</button>
+          <button class="btn btn-primary" onclick="registerPatient()"><i class="ti ti-check"></i> Register Patient</button>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="section" id="sec-profile">
+        <div class="form-card" style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+            <div class="av-lg" style="background:var(--accent-lt);color:var(--accent);width:52px;height:52px;font-size:17px">AK</div>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Amira Khalil</div>
+              <div style="font-size:12px;color:var(--text-2);margin-top:2px">#P-10041 &nbsp;·&nbsp; Female, 34 yrs &nbsp;·&nbsp; Blood group: O+</div>
+              <div style="margin-top:8px;display:flex;gap:6px">
+                <span class="pill pill-blue">Admitted</span>
+                <span class="pill pill-purple">Cardiology</span>
+                <span class="pill pill-gray">Dr. Mensah</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm"><i class="ti ti-edit"></i> Edit</button>
+              <button class="btn btn-sm btn-success" onclick="switchTab('admit')"><i class="ti ti-logout"></i> Discharge</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><div class="text-sm text-faint">Phone</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">+31 6 1234 5678</div></div>
+            <div><div class="text-sm text-faint">Email</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">a.khalil@email.com</div></div>
+            <div><div class="text-sm text-faint">Address</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">Westersingel 42, Rotterdam</div></div>
+            <div><div class="text-sm text-faint">Emergency contact</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">Youssef Khalil (Brother)</div></div>
+            <div><div class="text-sm text-faint">Insurance</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">Zilveren Kruis — ZK-882341</div></div>
+            <div><div class="text-sm text-faint">Admitted on</div><div style="font-size:12.5px;font-weight:600;margin-top:2px">07 May 2026 · Ward B, Bed 14</div></div>
+          </div>
+        </div>
+
+        <div class="form-card" style="margin-bottom:14px">
+          <div class="form-card-title"><i class="ti ti-activity"></i> Current Vitals <span style="margin-left:auto;font-size:11px;font-weight:400;color:var(--text-3)">Recorded 07 May 2026, 09:15</span></div>
+          <div class="vitals-grid">
+            <div class="vital-card"><div class="vital-label">Blood pressure</div><div class="vital-value">128/84</div><div class="vital-unit">mmHg</div></div>
+            <div class="vital-card"><div class="vital-label">Heart rate</div><div class="vital-value">78</div><div class="vital-unit">bpm</div></div>
+            <div class="vital-card"><div class="vital-label">Temperature</div><div class="vital-value">37.1</div><div class="vital-unit">°C</div></div>
+            <div class="vital-card"><div class="vital-label">O₂ saturation</div><div class="vital-value">97</div><div class="vital-unit">%</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+            <div class="vital-card"><div class="vital-label">Weight</div><div style="font-size:14px;font-weight:700">62 kg</div></div>
+            <div class="vital-card"><div class="vital-label">Height</div><div style="font-size:14px;font-weight:700">164 cm</div></div>
+            <div class="vital-card"><div class="vital-label">BMI</div><div style="font-size:14px;font-weight:700">23.1</div></div>
+            <div class="vital-card"><div class="vital-label">Allergies</div><div style="font-size:13px;font-weight:700">Penicillin</div></div>
+          </div>
+        </div>
+
+        <div class="form-card" style="margin-bottom:14px">
+          <div class="form-card-title" style="display:flex;justify-content:space-between"><span style="display:flex;align-items:center;gap:8px"><i class="ti ti-history"></i> Medical History & Visit Timeline</span><button class="btn btn-sm"><i class="ti ti-plus"></i> Add note</button></div>
+          <div id="timeline"></div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title" style="display:flex;justify-content:space-between"><span style="display:flex;align-items:center;gap:8px"><i class="ti ti-pill"></i> Active Prescriptions</span><button class="btn btn-sm"><i class="ti ti-plus"></i> Add prescription</button></div>
+          <div class="table-wrap" style="border:none;box-shadow:none;border-radius:0">
+            <table>
+              <thead><tr><th>Medication</th><th>Dosage</th><th>Frequency</th><th>Prescribed by</th><th>Since</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="td-strong">Lisinopril</td><td>10 mg</td><td>Once daily</td><td>Dr. Mensah</td><td class="td-mono">12 Jan 2026</td><td><span class="pill pill-green">Active</span></td></tr>
+                <tr><td class="td-strong">Atorvastatin</td><td>20 mg</td><td>Once at night</td><td>Dr. Mensah</td><td class="td-mono">17 Mar 2024</td><td><span class="pill pill-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ADMIT / DISCHARGE ── -->
+      <div class="section" id="sec-admit">
+        <div class="form-card mb-14">
+          <div class="form-card-title"><i class="ti ti-arrow-bar-to-down"></i> Admit Patient</div>
+          <div style="display:flex;align-items:center;gap:0;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:var(--r);background:var(--green-lt);color:var(--green);font-size:12px;font-weight:600">
+              <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:10px"><i class="ti ti-check" style="font-size:9px"></i></div> Patient registered
+            </div>
+            <span style="color:var(--text-3);padding:0 4px">›</span>
+            <div style="display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:var(--r);background:var(--accent-lt);color:var(--accent);font-size:12px;font-weight:700">
+              <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">2</div> Bed assignment
+            </div>
+            <span style="color:var(--text-3);padding:0 4px">›</span>
+            <div style="display:flex;align-items:center;gap:7px;padding:8px 12px;font-size:12px;color:var(--text-3)">
+              <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px">3</div> Doctor assigned
+            </div>
+            <span style="color:var(--text-3);padding:0 4px">›</span>
+            <div style="display:flex;align-items:center;gap:7px;padding:8px 12px;font-size:12px;color:var(--text-3)">
+              <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px">4</div> Confirm admission
+            </div>
+          </div>
+          <div class="form-grid mb-14">
+            <div class="field"><label>Patient *</label><select><option>Select patient</option><option selected>Amira Khalil — #P-10041</option><option>Chen Wei — #P-10040</option></select></div>
+            <div class="field"><label>Admission type *</label><select><option>Planned admission</option><option>Emergency admission</option><option>Transfer from another ward</option></select></div>
+            <div class="field"><label>Ward *</label><select><option>Ward A — General Medicine</option><option selected>Ward B — Cardiology</option><option>Ward C — Orthopaedics</option><option>ICU</option></select></div>
+            <div class="field"><label>Bed number *</label><select><option>Bed 14 (available)</option><option>Bed 17 (available)</option><option>Bed 21 (available)</option></select></div>
+            <div class="field"><label>Attending doctor *</label><select><option selected>Dr. Mensah — Cardiology</option><option>Dr. Okafor — ICU</option><option>Dr. Nair — Orthopaedics</option></select></div>
+            <div class="field"><label>Admission date *</label><input type="date" value="2026-05-07"></div>
+            <div class="field col-2"><label>Admission notes</label><textarea placeholder="Reason for admission, initial assessment…"></textarea></div>
+          </div>
+          <div class="form-actions"><button class="btn">Cancel</button><button class="btn btn-primary">Confirm admission</button></div>
+        </div>
+
+        <div class="form-card mb-14">
+          <div class="form-card-title"><i class="ti ti-arrow-bar-up"></i> Discharge Patient</div>
+          <div class="form-grid mb-14">
+            <div class="field"><label>Patient *</label><select><option selected>Amira Khalil — #P-10041 (Ward B, Bed 14)</option><option>Kwame Asante — #P-10037 (Ward A, Bed 3)</option></select></div>
+            <div class="field"><label>Discharge date *</label><input type="date" value="2026-05-07"></div>
+            <div class="field"><label>Discharge type *</label><select><option>Regular discharge — recovered</option><option>Discharge against medical advice</option><option>Transfer to another facility</option><option>Deceased</option></select></div>
+            <div class="field"><label>Follow-up appointment</label><input type="date"></div>
+            <div class="field col-2"><label>Discharge summary</label><textarea placeholder="Summary of treatment, outcome, medications on discharge…"></textarea></div>
+          </div>
+          <div class="form-actions"><button class="btn">Cancel</button><button class="btn btn-success"><i class="ti ti-check"></i> Confirm discharge</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Currently Admitted Patients</div><div class="card-subtitle">187 admitted · 3 ready for discharge</div></div>
+          </div>
+          <div class="table-wrap" style="border:none;box-shadow:none;border-radius:0">
+            <table>
+              <thead><tr><th>Patient</th><th>Ward / Bed</th><th>Doctor</th><th>Admitted</th><th>Days</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Amira Khalil</strong> <span class="td-mono">#P-10041</span></td><td>Ward B / Bed 14</td><td>Dr. Mensah</td><td class="td-mono">07 May</td><td>0</td><td><span class="pill pill-blue">Monitoring</span></td><td><button class="btn btn-sm btn-danger">Discharge</button></td></tr>
+                <tr><td><strong>Fatima Al-Rashid</strong> <span class="td-mono">#P-10040</span></td><td>ICU / Bed 2</td><td>Dr. Okafor</td><td class="td-mono">07 May</td><td>0</td><td><span class="pill pill-red">Critical</span></td><td><button class="btn btn-sm">View</button></td></tr>
+                <tr><td><strong>Tom Hargreaves</strong> <span class="td-mono">#P-10039</span></td><td>Ward C / Bed 7</td><td>Dr. Nair</td><td class="td-mono">06 May</td><td>1</td><td><span class="pill pill-amber">Observation</span></td><td><button class="btn btn-sm btn-danger">Discharge</button></td></tr>
+                <tr><td><strong>Sofia Andersson</strong> <span class="td-mono">#P-10038</span></td><td>Ward D / Bed 3</td><td>Dr. Kowalski</td><td class="td-mono">06 May</td><td>1</td><td><span class="pill pill-green">Stable</span></td><td><button class="btn btn-sm btn-danger">Discharge</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div>
+
+<script src="medicore.js"></script>
+<script src="sidebar.js"></script>
+<script>
+document.getElementById('sidebar').innerHTML = buildSidebar('patients');
+
+const patients = [
+  {id:'#P-10041',name:'Amira Khalil',age:34,gender:'Female',dept:'Cardiology',doctor:'Dr. Mensah',date:'07 May 2026',status:'Admitted'},
+  {id:'#P-10040',name:'Fatima Al-Rashid',age:29,gender:'Female',dept:'ICU',doctor:'Dr. Okafor',date:'07 May 2026',status:'Critical'},
+  {id:'#P-10039',name:'Tom Hargreaves',age:51,gender:'Male',dept:'Orthopaedics',doctor:'Dr. Nair',date:'06 May 2026',status:'Admitted'},
+  {id:'#P-10038',name:'Sofia Andersson',age:27,gender:'Female',dept:'Maternity',doctor:'Dr. Kowalski',date:'06 May 2026',status:'Admitted'},
+  {id:'#P-10037',name:'Kwame Asante',age:44,gender:'Male',dept:'General Medicine',doctor:'Dr. Pham',date:'05 May 2026',status:'Discharged'},
+  {id:'#P-10036',name:'Elena Petrov',age:62,gender:'Female',dept:'Neurology',doctor:'Dr. Adeyemi',date:'04 May 2026',status:'Outpatient'},
+  {id:'#P-10035',name:'James Park',age:38,gender:'Male',dept:'Orthopaedics',doctor:'Dr. Nair',date:'03 May 2026',status:'Outpatient'},
+  {id:'#P-10034',name:'Lucia Santos',age:31,gender:'Female',dept:'Maternity',doctor:'Dr. Kowalski',date:'02 May 2026',status:'Admitted'},
+  {id:'#P-10033',name:'Omar Balogun',age:55,gender:'Male',dept:'General Medicine',doctor:'Dr. Pham',date:'01 May 2026',status:'Discharged'},
+  {id:'#P-10032',name:'Yuki Tanaka',age:18,gender:'Female',dept:'Paediatrics',doctor:'Dr. Russo',date:'30 Apr 2026',status:'Outpatient'},
+];
+
+function renderTable(data) {
+  document.getElementById('patientTable').innerHTML = data.map(p => `
+    <tr onclick="switchTab('profile')" style="cursor:pointer">
+      <td class="td-mono">${p.id}</td>
+      <td><div class="flex-center flex-gap-8">${avatar(p.name)}<strong>${p.name}</strong></div></td>
+      <td>${p.age}</td><td>${p.gender}</td><td>${p.dept}</td><td>${p.doctor}</td>
+      <td class="td-mono text-sm">${p.date}</td>
+      <td>${pill(p.status)}</td>
+      <td><div class="flex-center" style="gap:4px">
+        <button class="btn btn-sm" onclick="event.stopPropagation();switchTab('profile')"><i class="ti ti-eye"></i></button>
+        <button class="btn btn-sm" onclick="event.stopPropagation()"><i class="ti ti-edit"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+function filterPatients() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const d = document.getElementById('deptFilter').value;
+  const s = document.getElementById('statusFilter').value;
+  renderTable(patients.filter(p =>
+    (!q || (p.name + p.id + p.doctor).toLowerCase().includes(q)) &&
+    (!d || p.dept === d) && (!s || p.status === s)));
+}
+
+const tlData = [
+  {color:'var(--accent)',date:'07 May 2026',title:'Admitted — chest pain & palpitations',sub:'Assigned to Ward B, Bed 14. ECG ordered. Dr. Mensah attending.',status:'Current',statusClass:'pill-blue'},
+  {color:'var(--green)',date:'12 Jan 2026',title:'Outpatient — follow-up cardiology',sub:'BP stable. Medication adjusted — Lisinopril 10mg.',status:'Discharged',statusClass:'pill-green'},
+  {color:'var(--amber)',date:'04 Oct 2025',title:'Admitted — hypertensive episode',sub:'3-day admission. BP managed with IV medication.',status:'Discharged',statusClass:'pill-green'},
+  {color:'var(--text-3)',date:'17 Mar 2024',title:'Lab results — lipid panel',sub:'Total cholesterol: 5.8 mmol/L. LDL elevated.'},
+  {color:'var(--text-3)',date:'02 Aug 2023',title:'Registration — new patient',sub:'Initial visit. Diagnosed with essential hypertension.'},
+];
+document.getElementById('timeline').innerHTML = tlData.map(t => `
+  <div class="timeline-item">
+    <div class="tl-dot" style="background:${t.color}"></div>
+    <div style="flex:1">
+      <div class="flex-center flex-gap-8">
+        <span class="tl-date">${t.date}</span>
+        <span class="tl-title">${t.title}</span>
+        ${t.status ? `<span class="pill ${t.statusClass}" style="margin-left:auto">${t.status}</span>` : ''}
+      </div>
+      <div class="tl-sub">${t.sub}</div>
+    </div>
+  </div>`).join('');
+
+function registerPatient() {
+  alert('Patient registered successfully! Assigning patient ID #P-10042.');
+  switchTab('records');
+}
+
+renderTable(patients);
+</script>
+</body>
+</html>
