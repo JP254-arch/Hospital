@@ -1,129 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-accent="blue">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Doctors & Staff — MediCore HMS</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<script src="mc-theme.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--blue:#185FA5;--blue-lt:#E6F1FB;--blue-dk:#0C447C;--green:#3B6D11;--green-lt:#EAF3DE;--amber:#854F0B;--amber-lt:#FAEEDA;--red:#A32D2D;--red-lt:#FCEBEB;--purple:#3C3489;--purple-lt:#EEEDFE;--teal:#0F6E56;--teal-lt:#E1F5EE;--border:#e2e8f0;--bg:#f8fafc;--surface:#fff;--text:#1a202c;--muted:#64748b;--subtle:#94a3b8;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
-.layout{display:flex;height:100vh;}
-.sidebar{width:210px;min-width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;}
-.logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.logo-ic{width:30px;height:30px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;}
-.logo-ic i{color:#fff;font-size:16px;}
-.logo h1{font-size:13px;font-weight:600;color:var(--text);}
-.logo p{font-size:10px;color:var(--muted);}
-.nav{padding:10px 8px;flex:1;}
-.nl{font-size:10px;font-weight:600;color:var(--subtle);text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:12px 0 4px;}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--muted);margin-bottom:1px;text-decoration:none;}
-.ni:hover{background:#f1f5f9;color:var(--text);}
-.ni.act{background:var(--blue-lt);color:var(--blue);font-weight:600;}
-.ni i{font-size:16px;width:18px;}
-.ni .bx{margin-left:auto;font-size:10px;background:var(--red);color:#fff;padding:1px 6px;border-radius:10px;}
-.main{flex:1;overflow-y:auto;}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 22px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+.app{display:flex;min-height:100vh;}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow-y:auto;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;box-shadow:var(--shadow);}
 .topbar h2{font-size:15px;font-weight:600;flex:1;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:.15s;}
-.btn:hover{background:#f1f5f9;}
-.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
-.btn.primary:hover{background:var(--blue-dk);}
-.content{padding:20px 22px;}
-.tabs{display:flex;gap:2px;background:#f1f5f9;padding:3px;border-radius:8px;margin-bottom:20px;width:fit-content;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+.btn:hover{background:var(--card2);}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn.primary:hover{background:var(--accent-dk);}
+.content{padding:22px 24px;}
+.tabs{display:flex;gap:2px;background:var(--card2);padding:3px;border-radius:var(--r);margin-bottom:20px;width:fit-content;border:1px solid var(--border);}
 .tab{padding:6px 16px;font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--muted);}
-.tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.tab.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;box-shadow:var(--shadow);}
 .sc .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
 .sc .lb{font-size:11px;color:var(--muted);margin-bottom:3px;}
-.sc .vl{font-size:22px;font-weight:700;}
+.sc .vl{font-size:21px;font-weight:600;}
 .sc .dl{font-size:10px;color:var(--muted);margin-top:3px;}
-.section{display:none;}
-.section.on{display:block;}
+.section{display:none;}.section.on{display:block;}
 .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.srch{display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);flex:1;}
-.srch i{color:var(--subtle);font-size:14px;}
-.srch input{border:none;outline:none;background:transparent;font-size:12px;color:var(--text);padding:8px 0;width:100%;}
-select{font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);}
+.srch{display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);flex:1;}
+.srch i{color:var(--hint);font-size:14px;}
+.srch input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);padding:8px 0;width:100%;font-family:'DM Sans',sans-serif;}
+select.filter{font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;}
 .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.staff-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.staff-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);}
 .sc-top{padding:16px;text-align:center;border-bottom:1px solid var(--border);}
-.av-lg{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;margin:0 auto 10px;}
-.sc-name{font-size:14px;font-weight:600;margin-bottom:2px;}
+.av-lg{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin:0 auto 10px;}
+.sc-name{font-size:13px;font-weight:600;margin-bottom:2px;}
 .sc-role{font-size:11px;color:var(--muted);margin-bottom:6px;}
-.sc-body{padding:12px 14px;}
+.sc-body{padding:10px 14px;}
 .sc-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border);}
 .sc-row:last-child{border-bottom:none;}
 .sc-row .k{color:var(--muted);}
 .sc-row .v{font-weight:500;}
 .sc-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;}
-.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;}
-.pg{background:var(--green-lt);color:var(--green);}
-.pa{background:var(--amber-lt);color:var(--amber);}
-.pb{background:var(--blue-lt);color:var(--blue);}
-.pr{background:var(--red-lt);color:var(--red);}
-.pt{background:var(--teal-lt);color:var(--teal);}
-.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-table{width:100%;border-collapse:collapse;}
-th{font-size:11px;font-weight:600;color:var(--muted);text-align:left;padding:9px 14px;border-bottom:1px solid var(--border);background:#f8fafc;}
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:600;color:var(--muted);text-align:left;padding:9px 14px;border-bottom:1px solid var(--border);background:var(--card2);text-transform:uppercase;letter-spacing:.06em;}
 td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:#f8fafc;}
-.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
-.form-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+tr:hover td{background:var(--card2);}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
 .form-card h3{font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
-.fg label{font-size:11px;font-weight:600;color:var(--muted);}
-.fg input,.fg select,.fg textarea{font-size:12px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);}
-.fg textarea{resize:vertical;min-height:60px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-grid.three{grid-template-columns:1fr 1fr 1fr;}
-.action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
-.schedule-grid{display:grid;grid-template-columns:160px repeat(7,1fr);border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.fg input,.fg select,.fg textarea{font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--card2);color:var(--text);outline:none;font-family:'DM Sans',sans-serif;width:100%;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);}
+.fg textarea{resize:vertical;min-height:60px;}
+.action-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
+/* Schedule grid */
+.schedule-grid{display:grid;grid-template-columns:160px repeat(7,1fr);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--card);box-shadow:var(--shadow);}
 .sg-cell{padding:8px 10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;}
 .sg-cell:last-child{border-right:none;}
-.sg-header{background:#f8fafc;font-weight:600;font-size:11px;color:var(--muted);}
+.sg-header{background:var(--card2);font-weight:600;color:var(--muted);}
 .sg-avail{background:var(--green-lt);color:var(--green);font-weight:500;}
-.sg-off{background:#f8fafc;color:var(--subtle);}
+.sg-off{background:var(--card2);color:var(--hint);}
 .sg-oncall{background:var(--amber-lt);color:var(--amber);font-weight:500;}
 .sg-leave{background:var(--red-lt);color:var(--red);}
-.star{color:#EF9F27;}
 </style>
 </head>
 <body>
-<div class="layout">
-  <div class="sidebar">
-    <div class="logo">
-      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
-      <div><h1>MediCore HMS</h1><p>Admin Portal</p></div>
-    </div>
-    <nav class="nav">
-      <div class="nl">Overview</div>
-      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
-      <div class="nl">Departments</div>
-      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
-      <a class="ni act" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
-      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
-      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy <span class="bx">3</span></a>
-      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
-      <div class="nl">Finance</div>
-      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
-      <a class="ni" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
-      <div class="nl" >System</div>
-      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
-
-    </nav>
-  </div>
-
+<div class="app">
+  <div id="mc-sidebar" data-active="doctors"></div>
   <div class="main">
     <div class="topbar">
       <h2>Doctors & Staff</h2>
       <button class="btn" onclick="switchTab('staff')"><i class="ti ti-list"></i> Staff List</button>
       <button class="btn primary" onclick="switchTab('add')"><i class="ti ti-plus"></i> Add Staff Member</button>
+      <div id="mc-topbar-controls"></div>
     </div>
     <div class="content">
       <div class="tabs">
@@ -132,36 +90,33 @@ tr:hover td{background:#f8fafc;}
         <div class="tab" id="tab-schedule" onclick="switchTab('schedule')">Weekly schedule</div>
         <div class="tab" id="tab-add" onclick="switchTab('add')">Add staff member</div>
       </div>
-
       <div class="stats">
-        <div class="sc"><div class="ic" style="background:var(--blue-lt)"><i class="ti ti-stethoscope" style="color:var(--blue);font-size:15px"></i></div><div class="lb">Total doctors</div><div class="vl">42</div><div class="dl">8 departments</div></div>
+        <div class="sc"><div class="ic" style="background:var(--accent-lt)"><i class="ti ti-stethoscope" style="color:var(--accent);font-size:15px"></i></div><div class="lb">Total doctors</div><div class="vl">42</div><div class="dl">8 departments</div></div>
         <div class="sc"><div class="ic" style="background:var(--teal-lt)"><i class="ti ti-nurse" style="color:var(--teal);font-size:15px"></i></div><div class="lb">Nurses & paramedics</div><div class="vl">118</div><div class="dl">3 shifts</div></div>
         <div class="sc"><div class="ic" style="background:var(--green-lt)"><i class="ti ti-user-check" style="color:var(--green);font-size:15px"></i></div><div class="lb">On duty now</div><div class="vl">87</div><div class="dl">of 160 total staff</div></div>
         <div class="sc"><div class="ic" style="background:var(--amber-lt)"><i class="ti ti-calendar-off" style="color:var(--amber);font-size:15px"></i></div><div class="lb">On leave</div><div class="vl">9</div><div class="dl">3 on sick leave</div></div>
       </div>
 
-      <!-- STAFF CARDS -->
+      <!-- CARDS -->
       <div class="section on" id="sec-cards">
         <div class="toolbar">
           <div class="srch"><i class="ti ti-search"></i><input type="text" id="cardSearch" placeholder="Search by name, department, specialty..." oninput="filterCards()"></div>
-          <select id="deptCardFilter" onchange="filterCards()"><option value="">All departments</option><option>Cardiology</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>General Medicine</option><option>Neurology</option><option>Paediatrics</option></select>
-          <select id="roleFilter" onchange="filterCards()"><option value="">All roles</option><option>Doctor</option><option>Nurse</option><option>Surgeon</option><option>Specialist</option></select>
+          <select class="filter" id="deptCardFilter" onchange="filterCards()"><option value="">All departments</option><option>Cardiology</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>General Medicine</option><option>Neurology</option><option>Paediatrics</option></select>
+          <select class="filter" id="roleFilter" onchange="filterCards()"><option value="">All roles</option><option>Doctor</option><option>Nurse</option><option>Surgeon</option><option>Specialist</option></select>
         </div>
         <div class="staff-grid" id="staffGrid"></div>
       </div>
 
-      <!-- STAFF LIST -->
+      <!-- LIST -->
       <div class="section" id="sec-staff">
         <div class="toolbar">
           <div class="srch"><i class="ti ti-search"></i><input type="text" id="listSearch" placeholder="Search staff..." oninput="filterList()"></div>
-          <select id="deptListFilter" onchange="filterList()"><option value="">All departments</option><option>Cardiology</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>General Medicine</option><option>Neurology</option><option>Paediatrics</option></select>
-          <select id="statusListFilter" onchange="filterList()"><option value="">All statuses</option><option>On Duty</option><option>Off Duty</option><option>On Leave</option></select>
+          <select class="filter" id="deptListFilter" onchange="filterList()"><option value="">All departments</option><option>Cardiology</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>General Medicine</option><option>Neurology</option><option>Paediatrics</option></select>
+          <select class="filter" id="statusListFilter" onchange="filterList()"><option value="">All statuses</option><option>On Duty</option><option>Off Duty</option><option>On Leave</option></select>
         </div>
         <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Staff ID</th><th>Name</th><th>Role</th><th>Department</th><th>Shift</th><th>Patients today</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="staffTable"></tbody>
-          </table>
+          <table><thead><tr><th>Staff ID</th><th>Name</th><th>Role</th><th>Department</th><th>Shift</th><th>Patients today</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="staffTable"></tbody></table>
         </div>
       </div>
 
@@ -169,13 +124,13 @@ tr:hover td{background:#f8fafc;}
       <div class="section" id="sec-schedule">
         <div style="margin-bottom:14px;display:flex;align-items:center;gap:12px;">
           <span style="font-size:13px;font-weight:600;">Week of 7–13 May 2026</span>
-          <button class="btn" style="padding:5px 10px;font-size:11px;"><i class="ti ti-chevron-left"></i> Prev week</button>
-          <button class="btn" style="padding:5px 10px;font-size:11px;">Next week <i class="ti ti-chevron-right"></i></button>
-          <div style="margin-left:auto;display:flex;gap:10px;font-size:11px;align-items:center;">
+          <button class="btn" style="padding:5px 10px;font-size:11px;"><i class="ti ti-chevron-left"></i> Prev</button>
+          <button class="btn" style="padding:5px 10px;font-size:11px;">Next <i class="ti ti-chevron-right"></i></button>
+          <div style="margin-left:auto;display:flex;gap:12px;font-size:11px;align-items:center;">
             <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--green-lt);border:1px solid #97C459;border-radius:2px;display:inline-block;"></span>On duty</span>
-            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--amber-lt);border:1px solid #EF9F27;border-radius:2px;display:inline-block;"></span>On call</span>
-            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#f8fafc;border:1px solid var(--border);border-radius:2px;display:inline-block;"></span>Off</span>
-            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--red-lt);border:1px solid #F09595;border-radius:2px;display:inline-block;"></span>Leave</span>
+            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--amber-lt);border:1px solid var(--amber);border-radius:2px;display:inline-block;"></span>On call</span>
+            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--card2);border:1px solid var(--border);border-radius:2px;display:inline-block;"></span>Off</span>
+            <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--red-lt);border:1px solid var(--red);border-radius:2px;display:inline-block;"></span>Leave</span>
           </div>
         </div>
         <div class="schedule-grid" id="scheduleGrid"></div>
@@ -184,7 +139,7 @@ tr:hover td{background:#f8fafc;}
       <!-- ADD STAFF -->
       <div class="section" id="sec-add">
         <div class="form-card">
-          <h3><i class="ti ti-user-plus" style="margin-right:6px"></i>Personal information</h3>
+          <h3><i class="ti ti-user-plus" style="margin-right:6px;color:var(--accent)"></i>Personal information</h3>
           <div class="form-grid">
             <div class="fg"><label>First name *</label><input type="text" placeholder="First name"></div>
             <div class="fg"><label>Last name *</label><input type="text" placeholder="Last name"></div>
@@ -196,10 +151,10 @@ tr:hover td{background:#f8fafc;}
           </div>
         </div>
         <div class="form-card">
-          <h3><i class="ti ti-stethoscope" style="margin-right:6px"></i>Professional details</h3>
+          <h3><i class="ti ti-stethoscope" style="margin-right:6px;color:var(--accent)"></i>Professional details</h3>
           <div class="form-grid">
-            <div class="fg"><label>Role *</label><select><option>Doctor</option><option>Surgeon</option><option>Specialist</option><option>Nurse</option><option>Paramedic</option><option>Lab Technician</option><option>Pharmacist</option><option>Radiologist</option><option>Receptionist</option></select></div>
-            <div class="fg"><label>Department *</label><select><option>Cardiology</option><option>General Medicine</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>Paediatrics</option><option>Neurology</option><option>Laboratory</option><option>Pharmacy</option></select></div>
+            <div class="fg"><label>Role *</label><select><option>Doctor</option><option>Surgeon</option><option>Specialist</option><option>Nurse</option><option>Paramedic</option><option>Lab Technician</option><option>Pharmacist</option></select></div>
+            <div class="fg"><label>Department *</label><select><option>Cardiology</option><option>General Medicine</option><option>ICU</option><option>Orthopaedics</option><option>Maternity</option><option>Paediatrics</option><option>Neurology</option></select></div>
             <div class="fg"><label>Specialty</label><input type="text" placeholder="e.g. Interventional Cardiology"></div>
             <div class="fg"><label>License number *</label><input type="text" placeholder="Medical license #"></div>
             <div class="fg"><label>Qualification</label><input type="text" placeholder="e.g. MBChB, MRCP, PhD"></div>
@@ -207,13 +162,13 @@ tr:hover td{background:#f8fafc;}
             <div class="fg"><label>Employment type</label><select><option>Full-time</option><option>Part-time</option><option>Locum</option><option>Consultant</option></select></div>
             <div class="fg"><label>Start date</label><input type="date"></div>
           </div>
-          <div class="fg"><label>Bio / notes</label><textarea placeholder="Brief professional biography or notes..."></textarea></div>
+          <div class="fg" style="margin-top:12px;"><label>Bio / notes</label><textarea placeholder="Brief professional biography..."></textarea></div>
         </div>
         <div class="form-card">
-          <h3><i class="ti ti-clock" style="margin-right:6px"></i>Default shift schedule</h3>
+          <h3><i class="ti ti-clock" style="margin-right:6px;color:var(--accent)"></i>Default shift schedule</h3>
           <div class="form-grid three">
             <div class="fg"><label>Shift type</label><select><option>Morning (07:00–15:00)</option><option>Afternoon (15:00–23:00)</option><option>Night (23:00–07:00)</option><option>Custom</option></select></div>
-            <div class="fg"><label>Working days</label><select><option>Mon–Fri</option><option>Mon–Sat</option><option>Rotating</option><option>Custom</option></select></div>
+            <div class="fg"><label>Working days</label><select><option>Mon–Fri</option><option>Mon–Sat</option><option>Rotating</option></select></div>
             <div class="fg"><label>Max patients/day</label><input type="number" placeholder="e.g. 20"></div>
           </div>
         </div>
@@ -225,32 +180,29 @@ tr:hover td{background:#f8fafc;}
     </div>
   </div>
 </div>
-
 <script>
 const staff=[
-  {id:'#D-001',name:'Dr. Kweku Mensah',role:'Cardiologist',dept:'Cardiology',shift:'Morning',patients:8,phone:'+31 6 1111 2222',status:'On Duty',color:'#E6F1FB',tc:'#185FA5',rating:4.9,exp:'14 yrs'},
-  {id:'#D-002',name:'Dr. Emeka Okafor',role:'ICU Specialist',dept:'ICU',shift:'Night',patients:4,phone:'+31 6 2222 3333',status:'On Duty',color:'#FCEBEB',tc:'#A32D2D',rating:4.8,exp:'11 yrs'},
-  {id:'#D-003',name:'Dr. Priya Nair',role:'Orthopaedic Surgeon',dept:'Orthopaedics',shift:'Morning',patients:6,phone:'+31 6 3333 4444',status:'On Duty',color:'#EEEDFE',tc:'#3C3489',rating:4.7,exp:'9 yrs'},
-  {id:'#D-004',name:'Dr. Anna Kowalski',role:'Obstetrician',dept:'Maternity',shift:'Morning',patients:5,phone:'+31 6 4444 5555',status:'On Duty',color:'#FBEAF0',tc:'#993556',rating:4.9,exp:'16 yrs'},
-  {id:'#D-005',name:'Dr. Linh Pham',role:'General Physician',dept:'General Medicine',shift:'Afternoon',patients:12,phone:'+31 6 5555 6666',status:'On Duty',color:'#EAF3DE',tc:'#3B6D11',rating:4.6,exp:'7 yrs'},
-  {id:'#D-006',name:'Dr. Tunde Adeyemi',role:'Neurologist',dept:'Neurology',shift:'Morning',patients:5,phone:'+31 6 6666 7777',status:'On Leave',color:'#FAEEDA',tc:'#854F0B',rating:4.8,exp:'12 yrs'},
-  {id:'#D-007',name:'Dr. Sofia Russo',role:'Paediatrician',dept:'Paediatrics',shift:'Morning',patients:10,phone:'+31 6 7777 8888',status:'On Duty',color:'#E1F5EE',tc:'#0F6E56',rating:4.7,exp:'8 yrs'},
-  {id:'#D-008',name:'Dr. Marc Blanc',role:'Neurologist',dept:'Neurology',shift:'Afternoon',patients:4,phone:'+31 6 8888 9999',status:'Off Duty',color:'#FAEEDA',tc:'#854F0B',rating:4.5,exp:'6 yrs'},
-  {id:'#N-001',name:'Nurse Aisha Diallo',role:'Head Nurse',dept:'Cardiology',shift:'Morning',patients:0,phone:'+31 6 1212 3434',status:'On Duty',color:'#E6F1FB',tc:'#185FA5',rating:4.8,exp:'10 yrs'},
+  {id:'#D-001',name:'Dr. Kweku Mensah',role:'Cardiologist',dept:'Cardiology',shift:'Morning',patients:8,phone:'+31 6 1111 2222',status:'On Duty',rating:4.9,exp:'14 yrs'},
+  {id:'#D-002',name:'Dr. Emeka Okafor',role:'ICU Specialist',dept:'ICU',shift:'Night',patients:4,phone:'+31 6 2222 3333',status:'On Duty',rating:4.8,exp:'11 yrs'},
+  {id:'#D-003',name:'Dr. Priya Nair',role:'Orthopaedic Surgeon',dept:'Orthopaedics',shift:'Morning',patients:6,phone:'+31 6 3333 4444',status:'On Duty',rating:4.7,exp:'9 yrs'},
+  {id:'#D-004',name:'Dr. Anna Kowalski',role:'Obstetrician',dept:'Maternity',shift:'Morning',patients:5,phone:'+31 6 4444 5555',status:'On Duty',rating:4.9,exp:'16 yrs'},
+  {id:'#D-005',name:'Dr. Linh Pham',role:'General Physician',dept:'General Medicine',shift:'Afternoon',patients:12,phone:'+31 6 5555 6666',status:'On Duty',rating:4.6,exp:'7 yrs'},
+  {id:'#D-006',name:'Dr. Tunde Adeyemi',role:'Neurologist',dept:'Neurology',shift:'Morning',patients:5,phone:'+31 6 6666 7777',status:'On Leave',rating:4.8,exp:'12 yrs'},
+  {id:'#D-007',name:'Dr. Sofia Russo',role:'Paediatrician',dept:'Paediatrics',shift:'Morning',patients:10,phone:'+31 6 7777 8888',status:'On Duty',rating:4.7,exp:'8 yrs'},
+  {id:'#D-008',name:'Dr. Marc Blanc',role:'Neurologist',dept:'Neurology',shift:'Afternoon',patients:4,phone:'+31 6 8888 9999',status:'Off Duty',rating:4.5,exp:'6 yrs'},
+  {id:'#N-001',name:'Nurse Aisha Diallo',role:'Head Nurse',dept:'Cardiology',shift:'Morning',patients:0,phone:'+31 6 1212 3434',status:'On Duty',rating:4.8,exp:'10 yrs'},
 ];
-const statusMap={['On Duty']:'pg',['Off Duty']:'pa',['On Leave']:'pr'};
+const statusMap={'On Duty':'pill-green','Off Duty':'pill-amber','On Leave':'pill-red'};
 function initials(n){return n.replace('Dr.','').replace('Nurse','').trim().split(' ').map(w=>w[0]).join('').slice(0,2);}
-function stars(r){return '★'.repeat(Math.floor(r))+'☆'.repeat(5-Math.floor(r));}
-
 function renderCards(data){
   document.getElementById('staffGrid').innerHTML=data.map(s=>`
     <div class="staff-card">
       <div class="sc-top">
-        <div class="av-lg" style="background:${s.color};color:${s.tc}">${initials(s.name)}</div>
+        <div class="av-lg" style="background:var(--accent-lt);color:var(--accent)">${initials(s.name)}</div>
         <div class="sc-name">${s.name}</div>
         <div class="sc-role">${s.role}</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-          <span class="pill pb">${s.dept}</span>
+          <span class="pill pill-blue">${s.dept}</span>
           <span class="pill ${statusMap[s.status]}">${s.status}</span>
         </div>
       </div>
@@ -259,7 +211,7 @@ function renderCards(data){
         <div class="sc-row"><span class="k">Shift</span><span class="v">${s.shift}</span></div>
         <div class="sc-row"><span class="k">Experience</span><span class="v">${s.exp}</span></div>
         <div class="sc-row"><span class="k">Patients today</span><span class="v">${s.patients}</span></div>
-        <div class="sc-row"><span class="k">Rating</span><span class="v star" style="font-size:12px">${s.rating} ★</span></div>
+        <div class="sc-row"><span class="k">Rating</span><span class="v" style="color:var(--amber)">${s.rating} ★</span></div>
       </div>
       <div class="sc-footer">
         <button class="btn" style="flex:1;justify-content:center;font-size:11px;padding:5px 0"><i class="ti ti-eye"></i> Profile</button>
@@ -267,17 +219,15 @@ function renderCards(data){
       </div>
     </div>`).join('');
 }
-
 function filterCards(){
   const q=document.getElementById('cardSearch').value.toLowerCase();
   const d=document.getElementById('deptCardFilter').value;
   renderCards(staff.filter(s=>(!q||(s.name+s.dept+s.role).toLowerCase().includes(q))&&(!d||s.dept===d)));
 }
-
 function renderList(data){
   document.getElementById('staffTable').innerHTML=data.map(s=>`<tr>
     <td style="font-size:11px;color:var(--muted)">${s.id}</td>
-    <td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:${s.color};color:${s.tc}">${initials(s.name)}</div>${s.name}</div></td>
+    <td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:var(--accent-lt);color:var(--accent)">${initials(s.name)}</div>${s.name}</div></td>
     <td>${s.role}</td><td>${s.dept}</td><td>${s.shift}</td><td>${s.patients}</td><td>${s.phone}</td>
     <td><span class="pill ${statusMap[s.status]}">${s.status}</span></td>
     <td><div style="display:flex;gap:4px;"><button class="btn" style="padding:4px 8px;font-size:10px"><i class="ti ti-eye"></i></button><button class="btn" style="padding:4px 8px;font-size:10px"><i class="ti ti-edit"></i></button></div></td>
@@ -289,7 +239,6 @@ function filterList(){
   const s=document.getElementById('statusListFilter').value;
   renderList(staff.filter(p=>(!q||(p.name+p.dept).toLowerCase().includes(q))&&(!d||p.dept===d)&&(!s||p.status===s)));
 }
-
 const scheduleData=[
   {name:'Dr. Mensah',dept:'Cardiology',days:['sg-avail','sg-off','sg-avail','sg-avail','sg-avail','sg-off','sg-off'],labels:['08–17','Off','08–17','08–17','08–13','Off','Off']},
   {name:'Dr. Okafor',dept:'ICU',days:['sg-oncall','sg-oncall','sg-oncall','sg-oncall','sg-oncall','sg-oncall','sg-oncall'],labels:['On Call','On Call','On Call','On Call','On Call','On Call','On Call']},
@@ -299,8 +248,7 @@ const scheduleData=[
   {name:'Dr. Adeyemi',dept:'Neurology',days:['sg-leave','sg-leave','sg-leave','sg-leave','sg-leave','sg-off','sg-off'],labels:['Leave','Leave','Leave','Leave','Leave','Off','Off']},
   {name:'Dr. Russo',dept:'Paediatrics',days:['sg-avail','sg-avail','sg-avail','sg-avail','sg-off','sg-off','sg-off'],labels:['08–17','08–17','08–17','08–17','Off','Off','Off']},
 ];
-const dayHeaders=['Mon 4','Tue 5','Wed 6','Thu 7','Fri 8','Sat 9','Sun 10'];
-
+const dayHeaders=['Mon 7','Tue 8','Wed 9','Thu 10','Fri 11','Sat 12','Sun 13'];
 function renderSchedule(){
   const grid=document.getElementById('scheduleGrid');
   let html=`<div class="sg-cell sg-header" style="font-weight:700">Doctor</div>${dayHeaders.map(d=>`<div class="sg-cell sg-header" style="text-align:center">${d}</div>`).join('')}`;
@@ -310,14 +258,12 @@ function renderSchedule(){
   });
   grid.innerHTML=html;
 }
-
 function switchTab(t){
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));
   document.querySelectorAll('.section').forEach(el=>el.classList.remove('on'));
   document.getElementById('tab-'+t).classList.add('on');
   document.getElementById('sec-'+t).classList.add('on');
 }
-
 renderCards(staff);renderList(staff);renderSchedule();
 </script>
 </body>

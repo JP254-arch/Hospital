@@ -1,168 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-accent="blue">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reports & Analytics — MediCore HMS</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="mc-theme.js"></script>
 <style>
-:root{
-  --bg:#0d0f18;--card:#13161f;--card2:#1a1e2c;--card3:#212638;
-  --border:#252a3d;--border2:#2f3550;
-  --violet:#7c6ef5;--violet-lt:rgba(124,110,245,.15);--violet-dk:#5a4dd4;
-  --cyan:#22d3ee;--cyan-lt:rgba(34,211,238,.12);
-  --green:#4ade80;--green-lt:rgba(74,222,128,.12);
-  --amber:#fbbf24;--amber-lt:rgba(251,191,36,.12);
-  --red:#f87171;--red-lt:rgba(248,113,113,.12);
-  --pink:#f472b6;--pink-lt:rgba(244,114,182,.12);
-  --text:#e2e8ff;--muted:#7e8ab0;--hint:#3d4466;
-  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
-  --r:8px;--r-lg:14px;
-}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
 .app{display:flex;min-height:100vh;}
-
-.sidebar{width:220px;min-width:220px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.logo-ic{width:34px;height:34px;background:var(--violet);border-radius:9px;display:flex;align-items:center;justify-content:center;}
-.logo-ic i{color:#fff;font-size:18px;}
-.logo h1{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.01em;}
-.logo p{font-size:11px;color:var(--muted);}
-.nav{padding:12px 8px;flex:1;}
-.nl{font-size:10px;font-weight:600;color:var(--hint);letter-spacing:.14em;text-transform:uppercase;padding:0 8px;margin:12px 0 4px;}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:12px;color:var(--muted);margin-bottom:2px;transition:all .15s;}
-.ni:hover{background:var(--card2);color:var(--text);}
-.ni.act{background:var(--violet-lt);color:var(--violet);font-weight:600;}
-.ni i{font-size:16px;width:18px;}
-
-.main{flex:1;display:flex;flex-direction:column;min-width:0;}
-.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
-.topbar h2{font-size:17px;font-weight:700;flex:1;letter-spacing:-.01em;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;font-weight:600;}
-.btn:hover{border-color:var(--violet);color:var(--violet);}
-.btn.primary{background:var(--violet);color:#fff;border-color:var(--violet);}
-.btn.primary:hover{background:var(--violet-dk);}
-
-.content{padding:24px;flex:1;}
-
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow-y:auto;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;box-shadow:var(--shadow);}
+.topbar h2{font-size:15px;font-weight:600;flex:1;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+.btn:hover{background:var(--card2);}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn.primary:hover{background:var(--accent-dk);}
+.content{padding:22px 24px;}
 /* KPI strip */
-.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;position:relative;overflow:hidden;}
-.kpi::after{content:'';position:absolute;bottom:-12px;right:-12px;width:50px;height:50px;border-radius:50%;opacity:.15;}
-.kpi.v::after{background:var(--violet);}
-.kpi.c::after{background:var(--cyan);}
-.kpi.g::after{background:var(--green);}
-.kpi.a::after{background:var(--amber);}
-.kpi.p::after{background:var(--pink);}
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;box-shadow:var(--shadow);}
 .kpi .label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-.kpi .value{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--text);line-height:1;}
+.kpi .value{font-family:'DM Mono',monospace;font-size:20px;font-weight:600;color:var(--text);line-height:1;}
 .kpi .delta{font-size:11px;margin-top:5px;}
-.delta.up{color:var(--green);}
-.delta.dn{color:var(--red);}
-.delta.nt{color:var(--muted);}
-
+.delta-up{color:var(--green);} .delta-dn{color:var(--red);} .delta-nt{color:var(--muted);}
 /* Tabs */
-.tabs{display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);padding:3px;border-radius:var(--r);margin-bottom:22px;width:fit-content;}
-.tab{padding:7px 16px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;color:var(--muted);transition:all .15s;}
-.tab.on{background:var(--violet);color:#fff;}
-
-.section{display:none;}
-.section.on{display:block;}
-
-/* Chart grid */
+.tabs{display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);padding:3px;border-radius:var(--r);margin-bottom:20px;width:fit-content;}
+.tab{padding:6px 16px;font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--muted);}
+.tab.on{background:var(--accent);color:#fff;}
+.section{display:none;}.section.on{display:block;}
+/* Charts */
 .chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;}
-.chart-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.chart-card p{font-size:11px;color:var(--muted);margin-bottom:16px;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow);}
+.chart-card h4{font-size:13px;font-weight:600;margin-bottom:3px;}
+.chart-card p{font-size:11px;color:var(--muted);margin-bottom:14px;}
 .chart-wrap{position:relative;}
-
-/* Date filter */
-.date-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-.period-btn{padding:6px 14px;font-size:12px;font-weight:600;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .15s;}
-.period-btn.on{background:var(--violet);color:#fff;border-color:var(--violet);}
-.period-btn:hover{border-color:var(--violet);color:var(--violet);}
-
-/* Table */
-.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{font-size:10px;font-weight:600;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);text-transform:uppercase;letter-spacing:.08em;}
-td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:var(--card2);}
-.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;}
-.pg{background:var(--green-lt);color:var(--green);}
-.pa{background:var(--amber-lt);color:var(--amber);}
-.pb{background:var(--cyan-lt);color:var(--cyan);}
-.pr{background:var(--red-lt);color:var(--red);}
-.pv{background:var(--violet-lt);color:var(--violet);}
-
+/* Period buttons */
+.date-bar{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.period-btn{padding:5px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.period-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.period-btn:hover:not(.on){border-color:var(--accent);color:var(--accent);}
 /* Summary cards */
 .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
-.sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;}
-.sum-card h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
-.sum-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow);}
+.sum-card h4{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .sum-row:last-child{border-bottom:none;}
 .sum-row .k{color:var(--muted);font-size:12px;}
-.sum-row .v{font-family:var(--mono);font-weight:600;color:var(--text);}
-
+.sum-row .v{font-family:'DM Mono',monospace;font-weight:600;}
 /* Mini bar */
-.mini-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden;}
+.mini-bar-wrap{height:4px;background:var(--card2);border-radius:2px;margin-top:4px;overflow:hidden;}
 .mini-bar{height:100%;border-radius:2px;}
-
-/* Export area */
+/* Export */
 .export-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.export-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
-.export-icon{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:20px;}
-.export-card h4{font-size:13px;font-weight:700;color:var(--text);}
+.export-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;box-shadow:var(--shadow);}
+.export-icon{width:38px;height:38px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.export-card h4{font-size:13px;font-weight:600;}
 .export-card p{font-size:12px;color:var(--muted);line-height:1.5;}
+@media(max-width:1000px){.chart-grid-2,.chart-grid-3,.kpi-strip,.summary-grid,.export-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar">
-    <div class="logo">
-      <div class="logo-ic"><i class="ti ti-building-hospital"></i></div>
-      <div><h1>MediCore HMS</h1><p>Reports</p></div>
-    </div>
-    <nav class="nav">
-      <div class="nl">Overview</div>
-      <a class="ni" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-      <a class="ni" href="patients.html"><i class="ti ti-users"></i> Patients</a>
-      <div class="nl">Departments</div>
-      <a class="ni" href="appointments.html"><i class="ti ti-calendar"></i> Appointments</a>
-      <a class="ni" href="doctors.html"><i class="ti ti-stethoscope"></i> Doctors & Staff</a>
-      <a class="ni" href="wards.html"><i class="ti ti-bed"></i> Wards & Beds</a>
-      <a class="ni" href="pharmacy.html"><i class="ti ti-pill"></i> Pharmacy</a>
-      <a class="ni" href="laboratory.html"><i class="ti ti-microscope"></i> Laboratory</a>
-      <div class="nl">Finance</div>
-      <a class="ni" href="billing.html"><i class="ti ti-receipt"></i> Billing</a>
-      <a class="ni act" href="reports.html"><i class="ti ti-chart-bar"></i> Reports</a>
-      <div class="nl" >System</div>
-      <a class="ni" href="settings.html"><i class="ti ti-settings"></i> Settings</a>
-    </nav>
-  </aside>
-
+  <div id="mc-sidebar" data-active="reports"></div>
   <div class="main">
     <div class="topbar">
       <h2>Reports & Analytics</h2>
       <button class="btn"><i class="ti ti-calendar"></i> May 2026</button>
       <button class="btn" onclick="switchTab('export')"><i class="ti ti-download"></i> Export reports</button>
       <button class="btn primary"><i class="ti ti-refresh"></i> Refresh data</button>
+      <div id="mc-topbar-controls"></div>
     </div>
-
     <div class="content">
       <div class="kpi-strip">
-        <div class="kpi v"><div class="label">Total patients</div><div class="value">4,821</div><div class="delta up">↑ 8.2% MoM</div></div>
-        <div class="kpi c"><div class="label">Revenue (MTD)</div><div class="value">€ 412K</div><div class="delta up">↑ 12.4% MoM</div></div>
-        <div class="kpi g"><div class="label">Bed occupancy</div><div class="value">78%</div><div class="delta nt">→ stable</div></div>
-        <div class="kpi a"><div class="label">Lab tests done</div><div class="value">1,204</div><div class="delta up">↑ 5.1% MoM</div></div>
-        <div class="kpi p"><div class="label">Avg stay (days)</div><div class="value">3.4</div><div class="delta dn">↓ 0.2 days</div></div>
+        <div class="kpi"><div class="label">Total patients</div><div class="value">4,821</div><div class="delta delta-up">↑ 8.2% MoM</div></div>
+        <div class="kpi"><div class="label">Revenue (MTD)</div><div class="value">€412K</div><div class="delta delta-up">↑ 12.4% MoM</div></div>
+        <div class="kpi"><div class="label">Bed occupancy</div><div class="value">78%</div><div class="delta delta-nt">→ stable</div></div>
+        <div class="kpi"><div class="label">Lab tests done</div><div class="value">1,204</div><div class="delta delta-up">↑ 5.1% MoM</div></div>
+        <div class="kpi"><div class="label">Avg stay (days)</div><div class="value">3.4</div><div class="delta delta-dn">↓ 0.2 days</div></div>
       </div>
-
       <div class="tabs">
         <div class="tab on" id="tab-overview" onclick="switchTab('overview')">Overview</div>
         <div class="tab" id="tab-patients" onclick="switchTab('patients')">Patients</div>
@@ -183,57 +102,34 @@ tr:hover td{background:var(--card2);}
           <button class="period-btn">Custom range</button>
         </div>
         <div class="chart-grid-2">
-          <div class="chart-card">
-            <h4>Monthly revenue</h4>
-            <p>Total revenue collected — May 2026 (daily)</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="revenueChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Patient admissions vs discharges</h4>
-            <p>Daily admit/discharge comparison — May 2026</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="admitChart"></canvas></div>
-          </div>
+          <div class="chart-card"><h4>Monthly revenue</h4><p>Total revenue collected — May 2026 (daily)</p><div class="chart-wrap" style="height:180px"><canvas id="revenueChart"></canvas></div></div>
+          <div class="chart-card"><h4>Patient admissions vs discharges</h4><p>Daily comparison — May 2026</p><div class="chart-wrap" style="height:180px"><canvas id="admitChart"></canvas></div></div>
         </div>
         <div class="chart-grid-3">
-          <div class="chart-card">
-            <h4>Department distribution</h4>
-            <p>Patient volume by department</p>
-            <div class="chart-wrap" style="height:160px"><canvas id="deptChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Appointment status</h4>
-            <p>Breakdown for this month</p>
-            <div class="chart-wrap" style="height:160px"><canvas id="apptChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Bed occupancy trend</h4>
-            <p>Weekly occupancy rate (%)</p>
-            <div class="chart-wrap" style="height:160px"><canvas id="bedChart"></canvas></div>
-          </div>
+          <div class="chart-card"><h4>Department distribution</h4><p>Patient volume by department</p><div class="chart-wrap" style="height:160px"><canvas id="deptChart"></canvas></div></div>
+          <div class="chart-card"><h4>Appointment status</h4><p>Breakdown for this month</p><div class="chart-wrap" style="height:160px"><canvas id="apptChart"></canvas></div></div>
+          <div class="chart-card"><h4>Bed occupancy trend</h4><p>Weekly occupancy rate (%)</p><div class="chart-wrap" style="height:160px"><canvas id="bedChart"></canvas></div></div>
         </div>
       </div>
 
-      <!-- PATIENTS REPORT -->
+      <!-- PATIENTS -->
       <div class="section" id="sec-patients">
         <div class="summary-grid">
-          <div class="sum-card">
-            <h4>Patient summary</h4>
+          <div class="sum-card"><h4>Patient summary</h4>
             <div class="sum-row"><span class="k">Total registered</span><span class="v">4,821</span></div>
             <div class="sum-row"><span class="k">New this month</span><span class="v">142</span></div>
             <div class="sum-row"><span class="k">Currently admitted</span><span class="v">187</span></div>
             <div class="sum-row"><span class="k">Discharged this month</span><span class="v">318</span></div>
             <div class="sum-row"><span class="k">Outpatients today</span><span class="v">97</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Demographics</h4>
+          <div class="sum-card"><h4>Demographics</h4>
             <div class="sum-row"><span class="k">Male patients</span><span class="v">2,241 (46%)</span></div>
             <div class="sum-row"><span class="k">Female patients</span><span class="v">2,580 (54%)</span></div>
             <div class="sum-row"><span class="k">Under 18</span><span class="v">482 (10%)</span></div>
             <div class="sum-row"><span class="k">18–60 yrs</span><span class="v">3,133 (65%)</span></div>
             <div class="sum-row"><span class="k">Over 60 yrs</span><span class="v">1,206 (25%)</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Outcomes</h4>
+          <div class="sum-card"><h4>Outcomes</h4>
             <div class="sum-row"><span class="k">Recovery rate</span><span class="v" style="color:var(--green)">94.2%</span></div>
             <div class="sum-row"><span class="k">Readmission rate</span><span class="v">4.8%</span></div>
             <div class="sum-row"><span class="k">Avg length of stay</span><span class="v">3.4 days</span></div>
@@ -242,84 +138,60 @@ tr:hover td{background:var(--card2);}
           </div>
         </div>
         <div class="chart-grid-2">
-          <div class="chart-card">
-            <h4>New patient registrations</h4>
-            <p>Monthly trend — Jan to May 2026</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="regChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Top diagnosis categories</h4>
-            <p>Most common diagnoses this month</p>
-            <div style="margin-top:4px">
-              <div id="diagList"></div>
-            </div>
-          </div>
+          <div class="chart-card"><h4>New patient registrations</h4><p>Monthly trend — Jan to May 2026</p><div class="chart-wrap" style="height:180px"><canvas id="regChart"></canvas></div></div>
+          <div class="chart-card"><h4>Top diagnosis categories</h4><p>Most common diagnoses this month</p><div id="diagList" style="padding-top:4px"></div></div>
         </div>
       </div>
 
-      <!-- FINANCE REPORT -->
+      <!-- FINANCE -->
       <div class="section" id="sec-finance">
         <div class="summary-grid">
-          <div class="sum-card">
-            <h4>Revenue summary</h4>
-            <div class="sum-row"><span class="k">Total revenue (MTD)</span><span class="v" style="color:var(--green)">€ 412,840</span></div>
-            <div class="sum-row"><span class="k">Consultations</span><span class="v">€ 84,200</span></div>
-            <div class="sum-row"><span class="k">Admissions / Inpatient</span><span class="v">€ 218,500</span></div>
-            <div class="sum-row"><span class="k">Laboratory</span><span class="v">€ 62,140</span></div>
-            <div class="sum-row"><span class="k">Pharmacy</span><span class="v">€ 48,000</span></div>
+          <div class="sum-card"><h4>Revenue summary</h4>
+            <div class="sum-row"><span class="k">Total revenue (MTD)</span><span class="v" style="color:var(--green)">€412,840</span></div>
+            <div class="sum-row"><span class="k">Consultations</span><span class="v">€84,200</span></div>
+            <div class="sum-row"><span class="k">Admissions / Inpatient</span><span class="v">€218,500</span></div>
+            <div class="sum-row"><span class="k">Laboratory</span><span class="v">€62,140</span></div>
+            <div class="sum-row"><span class="k">Pharmacy</span><span class="v">€48,000</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Collection status</h4>
-            <div class="sum-row"><span class="k">Paid invoices</span><span class="v" style="color:var(--green)">€ 381,200</span></div>
-            <div class="sum-row"><span class="k">Pending payment</span><span class="v" style="color:var(--amber)">€ 24,630</span></div>
-            <div class="sum-row"><span class="k">Overdue (&gt;30 days)</span><span class="v" style="color:var(--red)">€ 7,010</span></div>
-            <div class="sum-row"><span class="k">Insurance claims</span><span class="v">€ 196,400</span></div>
+          <div class="sum-card"><h4>Collection status</h4>
+            <div class="sum-row"><span class="k">Paid invoices</span><span class="v" style="color:var(--green)">€381,200</span></div>
+            <div class="sum-row"><span class="k">Pending payment</span><span class="v" style="color:var(--amber)">€24,630</span></div>
+            <div class="sum-row"><span class="k">Overdue (&gt;30 days)</span><span class="v" style="color:var(--red)">€7,010</span></div>
+            <div class="sum-row"><span class="k">Insurance claims</span><span class="v">€196,400</span></div>
             <div class="sum-row"><span class="k">Collection rate</span><span class="v" style="color:var(--green)">92.4%</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Expenses (MTD)</h4>
-            <div class="sum-row"><span class="k">Salaries & HR</span><span class="v">€ 142,000</span></div>
-            <div class="sum-row"><span class="k">Medicines & consumables</span><span class="v">€ 58,400</span></div>
-            <div class="sum-row"><span class="k">Equipment & maintenance</span><span class="v">€ 22,100</span></div>
-            <div class="sum-row"><span class="k">Utilities & overhead</span><span class="v">€ 18,300</span></div>
-            <div class="sum-row"><span class="k">Net profit (MTD)</span><span class="v" style="color:var(--green)">€ 172,040</span></div>
+          <div class="sum-card"><h4>Expenses (MTD)</h4>
+            <div class="sum-row"><span class="k">Salaries & HR</span><span class="v">€142,000</span></div>
+            <div class="sum-row"><span class="k">Medicines & consumables</span><span class="v">€58,400</span></div>
+            <div class="sum-row"><span class="k">Equipment & maintenance</span><span class="v">€22,100</span></div>
+            <div class="sum-row"><span class="k">Utilities & overhead</span><span class="v">€18,300</span></div>
+            <div class="sum-row"><span class="k">Net profit (MTD)</span><span class="v" style="color:var(--green)">€172,040</span></div>
           </div>
         </div>
         <div class="chart-grid-2">
-          <div class="chart-card">
-            <h4>Revenue by category</h4>
-            <p>Breakdown of revenue sources this month</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="revCatChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Monthly revenue trend</h4>
-            <p>Jan – May 2026</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="revTrendChart"></canvas></div>
-          </div>
+          <div class="chart-card"><h4>Revenue by category</h4><p>Breakdown of revenue sources this month</p><div class="chart-wrap" style="height:180px"><canvas id="revCatChart"></canvas></div></div>
+          <div class="chart-card"><h4>Monthly revenue trend</h4><p>Jan – May 2026</p><div class="chart-wrap" style="height:180px"><canvas id="revTrendChart"></canvas></div></div>
         </div>
       </div>
 
-      <!-- CLINICAL REPORT -->
+      <!-- CLINICAL -->
       <div class="section" id="sec-clinical">
         <div class="summary-grid">
-          <div class="sum-card">
-            <h4>Laboratory</h4>
+          <div class="sum-card"><h4>Laboratory</h4>
             <div class="sum-row"><span class="k">Tests ordered (MTD)</span><span class="v">1,204</span></div>
             <div class="sum-row"><span class="k">Results delivered</span><span class="v">1,186</span></div>
             <div class="sum-row"><span class="k">Critical flags</span><span class="v" style="color:var(--red)">38</span></div>
             <div class="sum-row"><span class="k">Avg turnaround</span><span class="v">3.8 hrs</span></div>
             <div class="sum-row"><span class="k">Top test</span><span class="v">FBC (22%)</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Pharmacy</h4>
+          <div class="sum-card"><h4>Pharmacy</h4>
             <div class="sum-row"><span class="k">Prescriptions filled</span><span class="v">2,841</span></div>
             <div class="sum-row"><span class="k">Items dispensed</span><span class="v">8,104</span></div>
             <div class="sum-row"><span class="k">Low stock alerts</span><span class="v" style="color:var(--amber)">3</span></div>
             <div class="sum-row"><span class="k">Expiring (30 days)</span><span class="v" style="color:var(--red)">11</span></div>
             <div class="sum-row"><span class="k">Top medicine</span><span class="v">Paracetamol</span></div>
           </div>
-          <div class="sum-card">
-            <h4>Appointments</h4>
+          <div class="sum-card"><h4>Appointments</h4>
             <div class="sum-row"><span class="k">Total booked</span><span class="v">1,840</span></div>
             <div class="sum-row"><span class="k">Completed</span><span class="v">1,612</span></div>
             <div class="sum-row"><span class="k">Cancelled</span><span class="v" style="color:var(--red)">148</span></div>
@@ -328,209 +200,83 @@ tr:hover td{background:var(--card2);}
           </div>
         </div>
         <div class="chart-grid-2">
-          <div class="chart-card">
-            <h4>Lab tests by category</h4>
-            <p>Volume breakdown by test type</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="labCatChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <h4>Doctor performance</h4>
-            <p>Patients seen this month per doctor</p>
-            <div class="chart-wrap" style="height:180px"><canvas id="docChart"></canvas></div>
-          </div>
+          <div class="chart-card"><h4>Lab tests by category</h4><p>Volume breakdown by test type</p><div class="chart-wrap" style="height:180px"><canvas id="labCatChart"></canvas></div></div>
+          <div class="chart-card"><h4>Doctor performance</h4><p>Patients seen this month per doctor</p><div class="chart-wrap" style="height:180px"><canvas id="docChart"></canvas></div></div>
         </div>
       </div>
 
       <!-- EXPORT -->
       <div class="section" id="sec-export">
-        <div style="margin-bottom:20px">
-          <h3 style="font-size:15px;font-weight:700;margin-bottom:6px">Export reports</h3>
-          <p style="font-size:13px;color:var(--muted)">Download detailed reports for any module. All exports are MongoDB-ready JSON or formatted PDF/CSV.</p>
-        </div>
+        <div style="margin-bottom:18px"><h3 style="font-size:15px;font-weight:600;margin-bottom:5px">Export reports</h3><p style="font-size:13px;color:var(--muted)">Download detailed reports for any module as PDF, CSV or JSON.</p></div>
         <div class="export-grid">
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--violet-lt)"><i class="ti ti-users" style="color:var(--violet)"></i></div>
-            <h4>Patient report</h4>
-            <p>Full patient registry, demographics, admission history, and outcomes.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting patient report as CSV...')"><i class="ti ti-file-text"></i> CSV</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting patient report as PDF...')"><i class="ti ti-file"></i> PDF</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting patient report as JSON...')"><i class="ti ti-braces"></i> JSON</button>
-            </div>
-          </div>
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--cyan-lt)"><i class="ti ti-receipt" style="color:var(--cyan)"></i></div>
-            <h4>Financial report</h4>
-            <p>Revenue, invoices, payment collection, insurance claims summary.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting financial report as CSV...')"><i class="ti ti-file-text"></i> CSV</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting financial report as PDF...')"><i class="ti ti-file"></i> PDF</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting financial report as JSON...')"><i class="ti ti-braces"></i> JSON</button>
-            </div>
-          </div>
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--green-lt)"><i class="ti ti-microscope" style="color:var(--green)"></i></div>
-            <h4>Laboratory report</h4>
-            <p>Test orders, results, turnaround times, and critical flags log.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting lab report as CSV...')"><i class="ti ti-file-text"></i> CSV</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting lab report as PDF...')"><i class="ti ti-file"></i> PDF</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting lab report as JSON...')"><i class="ti ti-braces"></i> JSON</button>
-            </div>
-          </div>
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--amber-lt)"><i class="ti ti-pill" style="color:var(--amber)"></i></div>
-            <h4>Pharmacy report</h4>
-            <p>Inventory levels, dispensing log, expiry alerts, and supplier data.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting pharmacy report as CSV...')"><i class="ti ti-file-text"></i> CSV</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting pharmacy report as PDF...')"><i class="ti ti-file"></i> PDF</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting pharmacy report as JSON...')"><i class="ti ti-braces"></i> JSON</button>
-            </div>
-          </div>
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--pink-lt)"><i class="ti ti-calendar" style="color:var(--pink)"></i></div>
-            <h4>Appointments report</h4>
-            <p>Scheduling data, completion rates, cancellations, and doctor workload.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting appointments as CSV...')"><i class="ti ti-file-text"></i> CSV</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting appointments as PDF...')"><i class="ti ti-file"></i> PDF</button>
-              <button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting appointments as JSON...')"><i class="ti ti-braces"></i> JSON</button>
-            </div>
-          </div>
-          <div class="export-card">
-            <div class="export-icon" style="background:var(--violet-lt)"><i class="ti ti-chart-bar" style="color:var(--violet)"></i></div>
-            <h4>Full analytics bundle</h4>
-            <p>All reports combined into one comprehensive export package.</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn primary" style="font-size:11px;padding:5px 12px" onclick="alert('Generating full analytics bundle...')"><i class="ti ti-download"></i> Download all</button>
-            </div>
-          </div>
+          <div class="export-card"><div class="export-icon" style="background:var(--accent-lt)"><i class="ti ti-users" style="color:var(--accent)"></i></div><h4>Patient report</h4><p>Full patient registry, demographics, admission history, and outcomes.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting CSV...')"><i class="ti ti-file-text"></i> CSV</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting PDF...')"><i class="ti ti-file"></i> PDF</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting JSON...')"><i class="ti ti-braces"></i> JSON</button></div></div>
+          <div class="export-card"><div class="export-icon" style="background:var(--green-lt)"><i class="ti ti-receipt" style="color:var(--green)"></i></div><h4>Financial report</h4><p>Revenue, invoices, payment collection, insurance claims summary.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting CSV...')"><i class="ti ti-file-text"></i> CSV</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting PDF...')"><i class="ti ti-file"></i> PDF</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting JSON...')"><i class="ti ti-braces"></i> JSON</button></div></div>
+          <div class="export-card"><div class="export-icon" style="background:var(--teal-lt)"><i class="ti ti-microscope" style="color:var(--teal)"></i></div><h4>Laboratory report</h4><p>Test orders, results, turnaround times, and critical flags log.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting CSV...')"><i class="ti ti-file-text"></i> CSV</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting PDF...')"><i class="ti ti-file"></i> PDF</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting JSON...')"><i class="ti ti-braces"></i> JSON</button></div></div>
+          <div class="export-card"><div class="export-icon" style="background:var(--amber-lt)"><i class="ti ti-pill" style="color:var(--amber)"></i></div><h4>Pharmacy report</h4><p>Inventory levels, dispensing log, expiry alerts, and supplier data.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting CSV...')"><i class="ti ti-file-text"></i> CSV</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting PDF...')"><i class="ti ti-file"></i> PDF</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting JSON...')"><i class="ti ti-braces"></i> JSON</button></div></div>
+          <div class="export-card"><div class="export-icon" style="background:var(--red-lt)"><i class="ti ti-calendar" style="color:var(--red)"></i></div><h4>Appointments report</h4><p>Scheduling data, completion rates, cancellations, and doctor workload.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting CSV...')"><i class="ti ti-file-text"></i> CSV</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting PDF...')"><i class="ti ti-file"></i> PDF</button><button class="btn" style="font-size:11px;padding:5px 12px" onclick="alert('Exporting JSON...')"><i class="ti ti-braces"></i> JSON</button></div></div>
+          <div class="export-card"><div class="export-icon" style="background:var(--accent-lt)"><i class="ti ti-chart-bar" style="color:var(--accent)"></i></div><h4>Full analytics bundle</h4><p>All reports combined into one comprehensive export package.</p><div style="display:flex;gap:8px;margin-top:4px"><button class="btn primary" style="font-size:11px;padding:5px 12px" onclick="alert('Generating full bundle...')"><i class="ti ti-download"></i> Download all</button></div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-// Chart defaults
-Chart.defaults.color='#7e8ab0';
-Chart.defaults.borderColor='#252a3d';
-Chart.defaults.font.family="'Outfit',sans-serif";
+// Build charts after theme is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+  const getAccent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#185FA5';
+  const gridColor = () => isDark() ? '#252d42' : '#e2e0d9';
+  const textColor = () => isDark() ? '#7d89b0' : '#6b6a66';
 
-const days=[1,2,3,4,5,6,7];
-const months=['Jan','Feb','Mar','Apr','May'];
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
 
-// Revenue chart
-new Chart(document.getElementById('revenueChart'),{
-  type:'line',
-  data:{labels:['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21'],
-    datasets:[{label:'Revenue (€)',data:[8200,9400,7800,11200,13400,10800,12100,9600,14200,15800,13400,11900,16200,14800,12400,17800,16400,15200,18400,14200,14820],
-      borderColor:'#7c6ef5',backgroundColor:'rgba(124,110,245,.08)',fill:true,tension:.4,pointRadius:2,pointBackgroundColor:'#7c6ef5'}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#1a1e2c'},ticks:{callback:v=>'€'+v/1000+'K'}},x:{grid:{display:false}}}}
-});
+  const months = ['Jan','Feb','Mar','Apr','May'];
+  const days7 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-// Admit chart
-new Chart(document.getElementById('admitChart'),{
-  type:'bar',
-  data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    datasets:[
-      {label:'Admissions',data:[28,34,22,41,38,19,15],backgroundColor:'rgba(124,110,245,.8)',borderRadius:4},
-      {label:'Discharges',data:[22,28,30,35,42,24,18],backgroundColor:'rgba(34,211,238,.5)',borderRadius:4}
-    ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{grid:{color:'#1a1e2c'}},x:{grid:{display:false}}}}
-});
+  const makeChart = (id, cfg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    cfg.options = cfg.options || {};
+    cfg.options.responsive = true;
+    cfg.options.maintainAspectRatio = false;
+    cfg.options.plugins = cfg.options.plugins || {};
+    cfg.options.plugins.legend = cfg.options.plugins.legend || {};
+    cfg.options.scales = cfg.options.scales || {};
+    return new Chart(el, cfg);
+  };
 
-// Dept doughnut
-new Chart(document.getElementById('deptChart'),{
-  type:'doughnut',
-  data:{labels:['Gen. Medicine','Cardiology','Orthopaedics','Maternity','Paediatrics','Neurology','ICU'],
-    datasets:[{data:[28,22,15,12,10,8,5],backgroundColor:['#7c6ef5','#22d3ee','#4ade80','#fbbf24','#f472b6','#f87171','#a78bfa'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},cutout:'65%'}
-});
+  makeChart('revenueChart',{type:'line',data:{labels:['1','3','5','7','9','11','13','15','17','19','21'],datasets:[{label:'Revenue',data:[8200,9400,7800,11200,13400,10800,12100,9600,14200,15800,14820],borderColor:getAccent(),backgroundColor:getAccent()+'22',fill:true,tension:.4,pointRadius:2}]},options:{scales:{y:{grid:{color:gridColor()},ticks:{color:textColor(),callback:v=>'€'+v/1000+'K'}},x:{grid:{display:false},ticks:{color:textColor()}}}}});
 
-// Appt status doughnut
-new Chart(document.getElementById('apptChart'),{
-  type:'doughnut',
-  data:{labels:['Confirmed','Completed','Pending','Cancelled','No-show'],
-    datasets:[{data:[42,38,12,6,2],backgroundColor:['#7c6ef5','#4ade80','#fbbf24','#f87171','#7e8ab0'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},cutout:'65%'}
-});
+  makeChart('admitChart',{type:'bar',data:{labels:days7,datasets:[{label:'Admissions',data:[28,34,22,41,38,19,15],backgroundColor:getAccent()+'cc',borderRadius:4},{label:'Discharges',data:[22,28,30,35,42,24,18],backgroundColor:'#1D9E7599',borderRadius:4}]},options:{scales:{y:{grid:{color:gridColor()},ticks:{color:textColor()}},x:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{position:'top',labels:{color:textColor(),boxWidth:10}}}}});
 
-// Bed occupancy line
-new Chart(document.getElementById('bedChart'),{
-  type:'line',
-  data:{labels:['W1','W2','W3','W4','W5'],
-    datasets:[{label:'Occupancy %',data:[72,75,80,74,78],borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.08)',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#4ade80'}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:60,max:100,grid:{color:'#1a1e2c'},ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}
-});
+  const deptColors=['#185FA5','#E24B4A','#1D9E75','#EF9F27','#7F77DD','#D4537E','#854F0B'];
+  makeChart('deptChart',{type:'doughnut',data:{labels:['Gen. Medicine','Cardiology','Orthopaedics','Maternity','Paediatrics','Neurology','ICU'],datasets:[{data:[28,22,15,12,10,8,5],backgroundColor:deptColors,borderWidth:0}]},options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:textColor(),font:{size:10}}}}}});
 
-// Registration trend
-new Chart(document.getElementById('regChart'),{
-  type:'bar',
-  data:{labels:months,datasets:[{label:'New patients',data:[98,112,124,131,142],backgroundColor:'rgba(124,110,245,.7)',borderRadius:6}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#1a1e2c'}},x:{grid:{display:false}}}}
-});
+  const statusColors=[getAccent(),'#1D9E75','#EF9F27','#E24B4A','#7c82a0'];
+  makeChart('apptChart',{type:'doughnut',data:{labels:['Confirmed','Completed','Pending','Cancelled','No-show'],datasets:[{data:[42,38,12,6,2],backgroundColor:statusColors,borderWidth:0}]},options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:textColor(),font:{size:10}}}}}});
 
-// Diagnosis bars
-const diags=[
-  {name:'Hypertension',pct:22,color:'#7c6ef5'},
-  {name:'Diabetes Mellitus',pct:18,color:'#22d3ee'},
-  {name:'Respiratory infections',pct:14,color:'#4ade80'},
-  {name:'Orthopaedic injuries',pct:11,color:'#fbbf24'},
-  {name:'Cardiac conditions',pct:10,color:'#f472b6'},
-  {name:'Maternity / OB',pct:9,color:'#f87171'},
-];
-document.getElementById('diagList').innerHTML=diags.map(d=>`
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-      <span style="color:var(--text)">${d.name}</span>
-      <span style="font-family:var(--mono);color:${d.color};font-weight:600">${d.pct}%</span>
-    </div>
-    <div class="mini-bar-wrap"><div class="mini-bar" style="width:${d.pct*4}px;max-width:100%;background:${d.color}"></div></div>
-  </div>`).join('');
+  makeChart('bedChart',{type:'line',data:{labels:['W1','W2','W3','W4','W5'],datasets:[{label:'Occupancy %',data:[72,75,80,74,78],borderColor:'#1D9E75',backgroundColor:'#1D9E7522',fill:true,tension:.4,pointRadius:3}]},options:{scales:{y:{min:60,max:100,grid:{color:gridColor()},ticks:{color:textColor(),callback:v=>v+'%'}},x:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{display:false}}}});
 
-// Rev category doughnut
-new Chart(document.getElementById('revCatChart'),{
-  type:'doughnut',
-  data:{labels:['Consultations','Admissions','Laboratory','Pharmacy','Surgery','Other'],
-    datasets:[{data:[84200,218500,62140,48000,35000,15000],backgroundColor:['#7c6ef5','#22d3ee','#4ade80','#fbbf24','#f472b6','#7e8ab0'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},cutout:'60%'}
-});
+  makeChart('regChart',{type:'bar',data:{labels:months,datasets:[{label:'New patients',data:[98,112,124,131,142],backgroundColor:getAccent()+'bb',borderRadius:6}]},options:{scales:{y:{grid:{color:gridColor()},ticks:{color:textColor()}},x:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{display:false}}}});
 
-// Rev trend
-new Chart(document.getElementById('revTrendChart'),{
-  type:'line',
-  data:{labels:months,datasets:[
-    {label:'Revenue',data:[310000,342000,368000,391000,412840],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.08)',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#22d3ee'},
-    {label:'Expenses',data:[218000,228000,232000,241000,240800],borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.04)',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#f87171'},
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{grid:{color:'#1a1e2c'},ticks:{callback:v=>'€'+v/1000+'K'}},x:{grid:{display:false}}}}
-});
+  const diags=[{name:'Hypertension',pct:22},{name:'Diabetes Mellitus',pct:18},{name:'Respiratory infections',pct:14},{name:'Orthopaedic injuries',pct:11},{name:'Cardiac conditions',pct:10},{name:'Maternity / OB',pct:9}];
+  document.getElementById('diagList').innerHTML=diags.map(d=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${d.name}</span><span style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${d.pct}%</span></div><div class="mini-bar-wrap"><div class="mini-bar" style="width:${d.pct*4}px;max-width:100%;background:var(--accent)"></div></div></div>`).join('');
 
-// Lab categories
-new Chart(document.getElementById('labCatChart'),{
-  type:'bar',
-  data:{labels:['Haematology','Biochemistry','Microbiology','Immunology','Urinalysis','Radiology'],
-    datasets:[{label:'Tests',data:[312,428,184,148,96,36],backgroundColor:['#7c6ef5','#22d3ee','#4ade80','#fbbf24','#f472b6','#f87171'],borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#1a1e2c'}},x:{grid:{display:false}}}}
-});
+  makeChart('revCatChart',{type:'doughnut',data:{labels:['Consultations','Admissions','Laboratory','Pharmacy','Surgery','Other'],datasets:[{data:[84200,218500,62140,48000,35000,15000],backgroundColor:deptColors,borderWidth:0}]},options:{cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:textColor(),font:{size:10}}}}}});
 
-// Doctor performance
-new Chart(document.getElementById('docChart'),{
-  type:'bar',
-  data:{labels:['Dr. Pham','Dr. Nair','Dr. Mensah','Dr. Kowalski','Dr. Adeyemi','Dr. Okafor'],
-    datasets:[{label:'Patients seen',data:[184,162,148,141,112,88],backgroundColor:'rgba(124,110,245,.7)',borderRadius:4,indexAxis:'y'}]},
-  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#1a1e2c'}},y:{grid:{display:false}}}}
+  makeChart('revTrendChart',{type:'line',data:{labels:months,datasets:[{label:'Revenue',data:[310000,342000,368000,391000,412840],borderColor:getAccent(),backgroundColor:getAccent()+'22',fill:true,tension:.4,pointRadius:3},{label:'Expenses',data:[218000,228000,232000,241000,240800],borderColor:'#E24B4A',backgroundColor:'#E24B4A11',fill:true,tension:.4,pointRadius:3}]},options:{scales:{y:{grid:{color:gridColor()},ticks:{color:textColor(),callback:v=>'€'+v/1000+'K'}},x:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{position:'top',labels:{color:textColor(),boxWidth:10}}}}});
+
+  makeChart('labCatChart',{type:'bar',data:{labels:['Haematology','Biochemistry','Microbiology','Immunology','Urinalysis','Radiology'],datasets:[{label:'Tests',data:[312,428,184,148,96,36],backgroundColor:deptColors,borderRadius:4}]},options:{scales:{y:{grid:{color:gridColor()},ticks:{color:textColor()}},x:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{display:false}}}});
+
+  makeChart('docChart',{type:'bar',data:{labels:['Dr. Pham','Dr. Nair','Dr. Mensah','Dr. Kowalski','Dr. Adeyemi','Dr. Okafor'],datasets:[{label:'Patients seen',data:[184,162,148,141,112,88],backgroundColor:getAccent()+'bb',borderRadius:4,indexAxis:'y'}]},options:{indexAxis:'y',scales:{x:{grid:{color:gridColor()},ticks:{color:textColor()}},y:{grid:{display:false},ticks:{color:textColor()}}},plugins:{legend:{display:false}}}});
 });
 
 function switchTab(t){
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.section').forEach(e=>e.classList.remove('on'));
-  const tab=document.getElementById('tab-'+t),sec=document.getElementById('sec-'+t);
-  if(tab)tab.classList.add('on');if(sec)sec.classList.add('on');
+  document.getElementById('tab-'+t).classList.add('on');
+  document.getElementById('sec-'+t).classList.add('on');
 }
-
 document.querySelectorAll('.period-btn').forEach(b=>{
   b.addEventListener('click',function(){document.querySelectorAll('.period-btn').forEach(x=>x.classList.remove('on'));this.classList.add('on');});
 });

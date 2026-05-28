@@ -1,259 +1,152 @@
-
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-accent="blue">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — MediCore HMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<script src="mc-theme.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .app { display: flex; height: 100vh; min-height: 600px; background: var(--color-background-tertiary); }
-  .sidebar { width: 220px; min-width: 220px; background: var(--color-background-primary); border-right: 0.5px solid var(--color-border-tertiary); display: flex; flex-direction: column; padding: 0; }
-  .sidebar-logo { padding: 20px 16px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .sidebar-logo .logo-icon { width: 32px; height: 32px; background: #185FA5; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-  .sidebar-logo .logo-icon i { color: #fff; font-size: 18px; }
-  .sidebar-logo h1 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
-  .sidebar-logo p { font-size: 11px; color: var(--color-text-secondary); }
-  .nav-section { padding: 12px 8px 4px; }
-  .nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 8px; margin-bottom: 4px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--border-radius-md); cursor: pointer; font-size: 13px; color: var(--color-text-secondary); transition: background 0.15s; margin-bottom: 1px; }
-  .nav-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
-  .nav-item.active { background: #E6F1FB; color: #185FA5; font-weight: 500; }
-  .nav-item i { font-size: 16px; width: 18px; }
-  .nav-item .badge { margin-left: auto; font-size: 10px; background: #E24B4A; color: #fff; padding: 1px 6px; border-radius: 10px; }
-  .sidebar-footer { margin-top: auto; padding: 12px 8px; border-top: 0.5px solid var(--color-border-tertiary); }
-  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-  .topbar { background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
-  .topbar h2 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
-  .topbar-date { font-size: 12px; color: var(--color-text-secondary); }
-  .topbar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); padding: 6px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); cursor: pointer; background: transparent; }
-  .topbar-btn:hover { background: var(--color-background-secondary); }
-  .alert-bar { background: #FAEEDA; border-bottom: 0.5px solid #FAC775; padding: 8px 24px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: #633806; }
-  .content { padding: 20px 24px; flex: 1; }
-  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-  .stat-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; }
-  .stat-card .icon-wrap { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-  .stat-card .label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .stat-card .value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1; }
-  .stat-card .delta { font-size: 11px; margin-top: 4px; }
-  .delta.up { color: #3B6D11; }
-  .delta.down { color: #A32D2D; }
-  .mid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
-  .card-link { font-size: 11px; color: #185FA5; cursor: pointer; }
-  .dept-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .dept-row:last-child { border-bottom: none; }
-  .dept-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dept-name { font-size: 12px; color: var(--color-text-primary); flex: 1; }
-  .dept-bar-wrap { flex: 2; height: 5px; background: var(--color-background-tertiary); border-radius: 3px; overflow: hidden; }
-  .dept-bar { height: 100%; border-radius: 3px; }
-  .dept-pct { font-size: 11px; color: var(--color-text-secondary); min-width: 32px; text-align: right; }
-  .appt-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .appt-row:last-child { border-bottom: none; }
-  .appt-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
-  .appt-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
-  .appt-dept { font-size: 11px; color: var(--color-text-secondary); }
-  .appt-time { font-size: 11px; color: var(--color-text-secondary); margin-left: auto; }
-  .status-pill { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
-  .pill-green { background: #EAF3DE; color: #3B6D11; }
-  .pill-amber { background: #FAEEDA; color: #633806; }
-  .pill-blue { background: #E6F1FB; color: #185FA5; }
-  .pill-red { background: #FCEBEB; color: #A32D2D; }
-  .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-align: left; padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  td { padding: 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--color-background-secondary); }
-  .alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .alert-item:last-child { border-bottom: none; }
-  .alert-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .alert-text { font-size: 12px; color: var(--color-text-primary); line-height: 1.4; }
-  .alert-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 1px; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+.app { display:flex; min-height:100vh; }
+.main { flex:1; display:flex; flex-direction:column; min-width:0; overflow-y:auto; }
+.topbar { background:var(--card); border-bottom:1px solid var(--border); padding:12px 24px;
+  display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; box-shadow:var(--shadow); }
+.topbar h2 { font-size:15px; font-weight:600; flex:1; }
+.topbar-date { font-size:12px; color:var(--muted); }
+.tbtn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:var(--r);
+  border:1px solid var(--border); background:var(--card); color:var(--text); font-size:12px;
+  font-family:'DM Sans',sans-serif; cursor:pointer; font-weight:500; }
+.tbtn:hover { background:var(--card2); }
+.alert-bar { background:var(--amber-lt); border-bottom:1px solid rgba(133,79,11,.2);
+  padding:8px 24px; display:flex; align-items:center; gap:10px; font-size:12px; color:var(--amber); }
+.alert-bar a { color:var(--amber); font-weight:600; margin-left:auto; text-decoration:none; }
+.content { padding:22px 24px; }
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); }
+.stat-card .ic { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+.stat-card .lb { font-size:11px; color:var(--muted); margin-bottom:4px; }
+.stat-card .vl { font-size:22px; font-weight:600; line-height:1; }
+.stat-card .dl { font-size:11px; margin-top:4px; }
+.dl-up{color:var(--green);} .dl-dn{color:var(--red);} .dl-nt{color:var(--muted);}
+.mid-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.card-title { font-size:13px; font-weight:600; }
+.card-link { font-size:11px; color:var(--accent); text-decoration:none; }
+.card-link:hover { text-decoration:underline; }
+.dept-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); }
+.dept-row:last-child { border-bottom:none; }
+.dept-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.dept-name { font-size:12px; flex:1; }
+.dept-bar-wrap { flex:2; height:5px; background:var(--card2); border-radius:3px; overflow:hidden; }
+.dept-bar { height:100%; border-radius:3px; }
+.dept-pct { font-size:11px; color:var(--muted); min-width:32px; text-align:right; }
+.appt-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.appt-row:last-child { border-bottom:none; }
+.appt-av { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; }
+.appt-name { font-size:12px; font-weight:600; }
+.appt-dept { font-size:11px; color:var(--muted); }
+.appt-time { font-size:11px; color:var(--muted); margin-left:auto; white-space:nowrap; }
+.bottom-grid { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:20px; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { font-size:11px; font-weight:600; color:var(--muted); text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); background:var(--card2); }
+td { padding:8px 8px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:var(--card2); }
+.alert-item { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.alert-item:last-child { border-bottom:none; }
+.alert-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.alert-text { font-size:12px; font-weight:500; line-height:1.4; }
+.alert-sub  { font-size:11px; color:var(--muted); margin-top:2px; }
 </style>
-
+</head>
+<body>
 <div class="app">
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon"><i class="ti ti-building-hospital" aria-hidden="true"></i></div>
-      <h1>MediCore HMS</h1>
-      <p>Admin Portal</p>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Overview</div>
-      <div class="nav-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
-      <div class="nav-item" onclick="sendPrompt('Open the Patients module of the hospital management system')"><i class="ti ti-users" aria-hidden="true"></i> Patients <span class="badge">12</span></div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Departments</div>
-      <div class="nav-item" onclick="sendPrompt('Open the appointments.html')"><i class="ti ti-calendar" aria-hidden="true"></i> Appointments</div>
-      <div class="nav-item" onclick="sendPrompt('Open the doctors.html')"><i class="ti ti-stethoscope" aria-hidden="true"></i> Doctors & Staff</div>
-      <div class="nav-item" onclick="sendPrompt('Open the wards.html')"><i class="ti ti-bed" aria-hidden="true"></i> Wards & Beds</div>
-      <div class="nav-item" onclick="sendPrompt('Open the pharmacy.html')"><i class="ti ti-pill" aria-hidden="true"></i> Pharmacy <span class="badge">3</span></div>
-      <div class="nav-item" onclick="sendPrompt('Open the laboratory.html')"><i class="ti ti-microscope" aria-hidden="true"></i> Laboratory</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Finance</div>
-      <div class="nav-item" onclick="sendPrompt('Open the Billing module')"><i class="ti ti-receipt" aria-hidden="true"></i> Billing</div>
-      <div class="nav-item" onclick="sendPrompt('Open the Reports & Analytics module')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Reports</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">System</div>
-      <div class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
-    </div>
-    <div class="sidebar-footer">
-      <div class="nav-item"><i class="ti ti-user-circle" aria-hidden="true"></i> Dr. Admin User</div>
-    </div>
-  </div>
-
+  <div id="mc-sidebar" data-active="dashboard"></div>
   <div class="main">
     <div class="topbar">
       <h2>Dashboard Overview</h2>
       <span class="topbar-date">Thursday, 7 May 2026</span>
-      <button class="topbar-btn"><i class="ti ti-bell" aria-hidden="true"></i> Alerts <span style="background:#E24B4A;color:#fff;font-size:10px;padding:0 5px;border-radius:8px;margin-left:4px;">5</span></button>
-      <button class="topbar-btn"><i class="ti ti-download" aria-hidden="true"></i> Export</button>
+      <button class="tbtn"><i class="ti ti-bell"></i> Alerts <span style="background:#E24B4A;color:#fff;font-size:10px;padding:0 5px;border-radius:8px;margin-left:4px;">5</span></button>
+      <button class="tbtn"><i class="ti ti-download"></i> Export</button>
+      <div id="mc-topbar-controls"></div>
     </div>
-
     <div class="alert-bar">
-      <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:14px;"></i>
+      <i class="ti ti-alert-triangle"></i>
       <strong>Low stock alert:</strong>&nbsp;Paracetamol 500mg and Amoxicillin 250mg are below reorder level.
-      <span style="margin-left:auto;cursor:pointer;text-decoration:underline;" onclick="sendPrompt('Show pharmacy low stock details')">View details ↗</span>
+      <a href="pharmacy.html">View details →</a>
     </div>
-
     <div class="content">
       <div class="stat-grid">
         <div class="stat-card">
-          <div class="icon-wrap" style="background:#E6F1FB;"><i class="ti ti-users" style="color:#185FA5;font-size:16px;" aria-hidden="true"></i></div>
-          <div class="label">Total Patients Today</div>
-          <div class="value">284</div>
-          <div class="delta up"><i class="ti ti-arrow-up" style="font-size:10px;" aria-hidden="true"></i> 12% vs yesterday</div>
+          <div class="ic" style="background:var(--accent-lt)"><i class="ti ti-users" style="color:var(--accent);font-size:16px"></i></div>
+          <div class="lb">Total Patients Today</div><div class="vl">284</div>
+          <div class="dl dl-up"><i class="ti ti-arrow-up" style="font-size:10px"></i> 12% vs yesterday</div>
         </div>
         <div class="stat-card">
-          <div class="icon-wrap" style="background:#EAF3DE;"><i class="ti ti-bed" style="color:#3B6D11;font-size:16px;" aria-hidden="true"></i></div>
-          <div class="label">Beds Occupied</div>
-          <div class="value">187<span style="font-size:14px;color:var(--color-text-secondary);font-weight:400;">/240</span></div>
-          <div class="delta up"><i class="ti ti-arrow-up" style="font-size:10px;" aria-hidden="true"></i> 78% occupancy</div>
+          <div class="ic" style="background:var(--green-lt)"><i class="ti ti-bed" style="color:var(--green);font-size:16px"></i></div>
+          <div class="lb">Beds Occupied</div><div class="vl">187<span style="font-size:14px;color:var(--muted);font-weight:400;">/240</span></div>
+          <div class="dl dl-up"><i class="ti ti-arrow-up" style="font-size:10px"></i> 78% occupancy</div>
         </div>
         <div class="stat-card">
-          <div class="icon-wrap" style="background:#FAEEDA;"><i class="ti ti-calendar" style="color:#854F0B;font-size:16px;" aria-hidden="true"></i></div>
-          <div class="label">Appointments Today</div>
-          <div class="value">63</div>
-          <div class="delta down"><i class="ti ti-arrow-down" style="font-size:10px;" aria-hidden="true"></i> 4% vs yesterday</div>
+          <div class="ic" style="background:var(--amber-lt)"><i class="ti ti-calendar" style="color:var(--amber);font-size:16px"></i></div>
+          <div class="lb">Appointments Today</div><div class="vl">63</div>
+          <div class="dl dl-dn"><i class="ti ti-arrow-down" style="font-size:10px"></i> 4% vs yesterday</div>
         </div>
         <div class="stat-card">
-          <div class="icon-wrap" style="background:#FCEBEB;"><i class="ti ti-heart-rate-monitor" style="color:#A32D2D;font-size:16px;" aria-hidden="true"></i></div>
-          <div class="label">Emergency Cases</div>
-          <div class="value">9</div>
-          <div class="delta down" style="color:#A32D2D;"><i class="ti ti-point" style="font-size:10px;" aria-hidden="true"></i> 3 critical</div>
+          <div class="ic" style="background:var(--red-lt)"><i class="ti ti-heart-rate-monitor" style="color:var(--red);font-size:16px"></i></div>
+          <div class="lb">Emergency Cases</div><div class="vl">9</div>
+          <div class="dl dl-dn" style="color:var(--red)"><i class="ti ti-point" style="font-size:10px"></i> 3 critical</div>
         </div>
       </div>
-
       <div class="mid-grid">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">Department Bed Occupancy</span>
-            <span class="card-link" onclick="sendPrompt('Show full ward and bed management module')">View all ↗</span>
-          </div>
-          <div class="dept-row"><div class="dept-dot" style="background:#185FA5;"></div><div class="dept-name">General Medicine</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:88%;background:#185FA5;"></div></div><div class="dept-pct">88%</div></div>
-          <div class="dept-row"><div class="dept-dot" style="background:#E24B4A;"></div><div class="dept-name">Emergency / ICU</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:95%;background:#E24B4A;"></div></div><div class="dept-pct">95%</div></div>
-          <div class="dept-row"><div class="dept-dot" style="background:#1D9E75;"></div><div class="dept-name">Paediatrics</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:62%;background:#1D9E75;"></div></div><div class="dept-pct">62%</div></div>
-          <div class="dept-row"><div class="dept-dot" style="background:#EF9F27;"></div><div class="dept-name">Maternity</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:74%;background:#EF9F27;"></div></div><div class="dept-pct">74%</div></div>
-          <div class="dept-row"><div class="dept-dot" style="background:#7F77DD;"></div><div class="dept-name">Orthopaedics</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:55%;background:#7F77DD;"></div></div><div class="dept-pct">55%</div></div>
-          <div class="dept-row"><div class="dept-dot" style="background:#D4537E;"></div><div class="dept-name">Cardiology</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:81%;background:#D4537E;"></div></div><div class="dept-pct">81%</div></div>
+          <div class="card-header"><span class="card-title">Department Bed Occupancy</span><a href="wards.html" class="card-link">View all →</a></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#185FA5"></div><div class="dept-name">General Medicine</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:88%;background:#185FA5"></div></div><div class="dept-pct">88%</div></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#E24B4A"></div><div class="dept-name">Emergency / ICU</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:95%;background:#E24B4A"></div></div><div class="dept-pct">95%</div></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#1D9E75"></div><div class="dept-name">Paediatrics</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:62%;background:#1D9E75"></div></div><div class="dept-pct">62%</div></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#EF9F27"></div><div class="dept-name">Maternity</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:74%;background:#EF9F27"></div></div><div class="dept-pct">74%</div></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#7F77DD"></div><div class="dept-name">Orthopaedics</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:55%;background:#7F77DD"></div></div><div class="dept-pct">55%</div></div>
+          <div class="dept-row"><div class="dept-dot" style="background:#D4537E"></div><div class="dept-name">Cardiology</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:81%;background:#D4537E"></div></div><div class="dept-pct">81%</div></div>
         </div>
-
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">Today's Appointments</span>
-            <span class="card-link" onclick="sendPrompt('Open full appointments and scheduling module')">View all ↗</span>
-          </div>
-          <div class="appt-row">
-            <div class="appt-avatar" style="background:#E6F1FB;color:#185FA5;">AK</div>
-            <div><div class="appt-name">Amira Khalil</div><div class="appt-dept">Cardiology</div></div>
-            <span class="appt-time">09:00</span>
-            <span class="status-pill pill-green">Confirmed</span>
-          </div>
-          <div class="appt-row">
-            <div class="appt-avatar" style="background:#EAF3DE;color:#3B6D11;">JP</div>
-            <div><div class="appt-name">James Park</div><div class="appt-dept">Orthopaedics</div></div>
-            <span class="appt-time">10:30</span>
-            <span class="status-pill pill-amber">Pending</span>
-          </div>
-          <div class="appt-row">
-            <div class="appt-avatar" style="background:#FBEAF0;color:#993556;">LS</div>
-            <div><div class="appt-name">Lucia Santos</div><div class="appt-dept">Maternity</div></div>
-            <span class="appt-time">11:15</span>
-            <span class="status-pill pill-green">Confirmed</span>
-          </div>
-          <div class="appt-row">
-            <div class="appt-avatar" style="background:#FAEEDA;color:#854F0B;">OB</div>
-            <div><div class="appt-name">Omar Balogun</div><div class="appt-dept">General Med.</div></div>
-            <span class="appt-time">13:00</span>
-            <span class="status-pill pill-blue">In Progress</span>
-          </div>
-          <div class="appt-row">
-            <div class="appt-avatar" style="background:#FCEBEB;color:#A32D2D;">RP</div>
-            <div><div class="appt-name">Riya Patel</div><div class="appt-dept">Paediatrics</div></div>
-            <span class="appt-time">14:30</span>
-            <span class="status-pill pill-red">Cancelled</span>
-          </div>
+          <div class="card-header"><span class="card-title">Today's Appointments</span><a href="appointments.html" class="card-link">View all →</a></div>
+          <div class="appt-row"><div class="appt-av" style="background:var(--accent-lt);color:var(--accent)">AK</div><div><div class="appt-name">Amira Khalil</div><div class="appt-dept">Cardiology</div></div><span class="appt-time">09:00</span><span class="pill pill-green">Confirmed</span></div>
+          <div class="appt-row"><div class="appt-av" style="background:var(--green-lt);color:var(--green)">JP</div><div><div class="appt-name">James Park</div><div class="appt-dept">Orthopaedics</div></div><span class="appt-time">10:30</span><span class="pill pill-amber">Pending</span></div>
+          <div class="appt-row"><div class="appt-av" style="background:#FBEAF0;color:#993556">LS</div><div><div class="appt-name">Lucia Santos</div><div class="appt-dept">Maternity</div></div><span class="appt-time">11:15</span><span class="pill pill-green">Confirmed</span></div>
+          <div class="appt-row"><div class="appt-av" style="background:var(--amber-lt);color:var(--amber)">OB</div><div><div class="appt-name">Omar Balogun</div><div class="appt-dept">General Med.</div></div><span class="appt-time">13:00</span><span class="pill pill-blue">In Progress</span></div>
+          <div class="appt-row"><div class="appt-av" style="background:var(--red-lt);color:var(--red)">RP</div><div><div class="appt-name">Riya Patel</div><div class="appt-dept">Paediatrics</div></div><span class="appt-time">14:30</span><span class="pill pill-red">Cancelled</span></div>
         </div>
       </div>
-
       <div class="bottom-grid">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">Recent Admissions</span>
-            <span class="card-link" onclick="sendPrompt('Open the full patient management module')">View all ↗</span>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient ID</th>
-                  <th>Name</th>
-                  <th>Department</th>
-                  <th>Doctor</th>
-                  <th>Admitted</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td style="color:var(--color-text-secondary);">#P-10041</td><td>Chen Wei</td><td>Cardiology</td><td>Dr. Mensah</td><td>07 May</td><td><span class="status-pill pill-blue">Admitted</span></td></tr>
-                <tr><td style="color:var(--color-text-secondary);">#P-10040</td><td>Fatima Al-Rashid</td><td>ICU</td><td>Dr. Okafor</td><td>07 May</td><td><span class="status-pill pill-red">Critical</span></td></tr>
-                <tr><td style="color:var(--color-text-secondary);">#P-10039</td><td>Tom Hargreaves</td><td>Orthopaedics</td><td>Dr. Nair</td><td>06 May</td><td><span class="status-pill pill-amber">Observation</span></td></tr>
-                <tr><td style="color:var(--color-text-secondary);">#P-10038</td><td>Sofia Andersson</td><td>Maternity</td><td>Dr. Kowalski</td><td>06 May</td><td><span class="status-pill pill-green">Stable</span></td></tr>
-                <tr><td style="color:var(--color-text-secondary);">#P-10037</td><td>Kwame Asante</td><td>General Med.</td><td>Dr. Pham</td><td>05 May</td><td><span class="status-pill pill-green">Discharge</span></td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="card-header"><span class="card-title">Recent Admissions</span><a href="patients.html" class="card-link">View all →</a></div>
+          <table>
+            <thead><tr><th>Patient ID</th><th>Name</th><th>Department</th><th>Doctor</th><th>Admitted</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted);font-size:11px">#P-10041</td><td>Chen Wei</td><td>Cardiology</td><td>Dr. Mensah</td><td>07 May</td><td><span class="pill pill-blue">Admitted</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">#P-10040</td><td>Fatima Al-Rashid</td><td>ICU</td><td>Dr. Okafor</td><td>07 May</td><td><span class="pill pill-red">Critical</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">#P-10039</td><td>Tom Hargreaves</td><td>Orthopaedics</td><td>Dr. Nair</td><td>06 May</td><td><span class="pill pill-amber">Observation</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">#P-10038</td><td>Sofia Andersson</td><td>Maternity</td><td>Dr. Kowalski</td><td>06 May</td><td><span class="pill pill-green">Stable</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">#P-10037</td><td>Kwame Asante</td><td>General Med.</td><td>Dr. Pham</td><td>05 May</td><td><span class="pill pill-green">Discharge</span></td></tr>
+            </tbody>
+          </table>
         </div>
-
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">System Alerts</span>
-            <span class="card-link">Mark all read</span>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon" style="background:#FCEBEB;"><i class="ti ti-alert-circle" style="color:#A32D2D;font-size:14px;" aria-hidden="true"></i></div>
-            <div><div class="alert-text">ICU at 95% capacity</div><div class="alert-sub">2 mins ago · Emergency</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon" style="background:#FAEEDA;"><i class="ti ti-pill" style="color:#854F0B;font-size:14px;" aria-hidden="true"></i></div>
-            <div><div class="alert-text">Paracetamol below reorder level</div><div class="alert-sub">18 mins ago · Pharmacy</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon" style="background:#EAF3DE;"><i class="ti ti-microscope" style="color:#3B6D11;font-size:14px;" aria-hidden="true"></i></div>
-            <div><div class="alert-text">14 lab results ready</div><div class="alert-sub">34 mins ago · Laboratory</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon" style="background:#E6F1FB;"><i class="ti ti-receipt" style="color:#185FA5;font-size:14px;" aria-hidden="true"></i></div>
-            <div><div class="alert-text">6 invoices awaiting approval</div><div class="alert-sub">1 hr ago · Billing</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon" style="background:#EEEDFE;"><i class="ti ti-user-plus" style="color:#534AB7;font-size:14px;" aria-hidden="true"></i></div>
-            <div><div class="alert-text">New staff onboarding pending</div><div class="alert-sub">2 hrs ago · HR</div></div>
-          </div>
+          <div class="card-header"><span class="card-title">System Alerts</span><span class="card-link" style="cursor:pointer">Mark all read</span></div>
+          <div class="alert-item"><div class="alert-icon" style="background:var(--red-lt)"><i class="ti ti-alert-circle" style="color:var(--red);font-size:14px"></i></div><div><div class="alert-text">ICU at 95% capacity</div><div class="alert-sub">2 mins ago · Emergency</div></div></div>
+          <div class="alert-item"><div class="alert-icon" style="background:var(--amber-lt)"><i class="ti ti-pill" style="color:var(--amber);font-size:14px"></i></div><div><div class="alert-text">Paracetamol below reorder level</div><div class="alert-sub">18 mins ago · Pharmacy</div></div></div>
+          <div class="alert-item"><div class="alert-icon" style="background:var(--green-lt)"><i class="ti ti-microscope" style="color:var(--green);font-size:14px"></i></div><div><div class="alert-text">14 lab results ready</div><div class="alert-sub">34 mins ago · Laboratory</div></div></div>
+          <div class="alert-item"><div class="alert-icon" style="background:var(--accent-lt)"><i class="ti ti-receipt" style="color:var(--accent);font-size:14px"></i></div><div><div class="alert-text">6 invoices awaiting approval</div><div class="alert-sub">1 hr ago · Billing</div></div></div>
+          <div class="alert-item"><div class="alert-icon" style="background:#EEEDFE"><i class="ti ti-user-plus" style="color:#534AB7;font-size:14px"></i></div><div><div class="alert-text">New staff onboarding pending</div><div class="alert-sub">2 hrs ago · HR</div></div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+</body>
+</html>
